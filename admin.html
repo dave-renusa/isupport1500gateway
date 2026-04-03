@@ -68,8 +68,7 @@
     .banner.success { border: 1px solid rgba(5,150,105,0.20); background: rgba(5,150,105,0.08); color: #065f46; }
     .banner.error   { border: 1px solid rgba(220,38,38,0.18); background: rgba(220,38,38,0.08); color: #991b1b; }
     .banner.info    { border: 1px solid rgba(59,130,246,0.20); background: rgba(59,130,246,0.08); color: #1e40af; }
-    .setup-box { padding: 20px; border-radius: 20px; border: 2px dashed var(--border); background: #fafafa; margin-bottom: 24px; }
-    .setup-box code { background: #f1f5f9; padding: 2px 6px; border-radius: 6px; font-size: 14px; }
+
     @media (max-width: 960px) {
       .grid-3, .admin-grid, .support-grid { grid-template-columns: 1fr; }
     }
@@ -86,32 +85,6 @@
   </header>
 
   <main class="wrap">
-
-    <!-- EmailJS config box — remove once set up -->
-    <div id="setupBox" class="setup-box">
-      <div class="strong">EmailJS setup required</div>
-      <div class="muted small" style="margin-top:8px;">
-        Paste your three EmailJS values below to enable email sending.
-        Get them free at <a href="https://emailjs.com" target="_blank" style="color:var(--accent);">emailjs.com</a>
-        &rarr; Account &rarr; API Keys (Public Key) and Email Services / Templates.
-      </div>
-      <div style="display:grid; gap:12px; margin-top:16px;">
-        <label>
-          <div class="tiny" style="margin-bottom:6px;">Public Key (Account &rarr; API Keys)</div>
-          <input class="field" id="cfgPublicKey" placeholder="e.g. abc123XYZ..." />
-        </label>
-        <label>
-          <div class="tiny" style="margin-bottom:6px;">Service ID (Email Services &rarr; your service)</div>
-          <input class="field" id="cfgServiceId" placeholder="e.g. service_xxxxxxx" />
-        </label>
-        <label>
-          <div class="tiny" style="margin-bottom:6px;">Template ID (Email Templates &rarr; your template)</div>
-          <input class="field" id="cfgTemplateId" placeholder="e.g. template_xxxxxxx" />
-        </label>
-        <button class="btn" id="saveConfigBtn" type="button">Save config</button>
-        <div id="configStatus" class="tiny"></div>
-      </div>
-    </div>
 
     <div class="grid-3">
       <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
@@ -211,24 +184,18 @@
       { name: "John",  role: "RenUSA", email: "john@renusa.org" }
     ];
 
-    // ── EmailJS config (saved to localStorage) ─────────────────────────────
-    const CFG_KEY = "ejs_config_gateway";
+    // ── EmailJS config ──────────────────────────────────────────────────────
+    const EJS_PUBLIC_KEY  = "gPDEs8wJd0K_7vL8G";
+    const EJS_SERVICE_ID  = "service_8mcczta";
+    const EJS_TEMPLATE_ID = "template_0i3avw1";
 
     function loadConfig() {
-      try { return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch { return {}; }
-    }
-
-    function saveConfig(cfg) {
-      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+      return { publicKey: EJS_PUBLIC_KEY, serviceId: EJS_SERVICE_ID, templateId: EJS_TEMPLATE_ID };
     }
 
     function initEmailJS() {
-      const cfg = loadConfig();
-      if (cfg.publicKey) {
-        emailjs.init({ publicKey: cfg.publicKey });
-        return true;
-      }
-      return false;
+      emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+      return true;
     }
 
     // ── State ───────────────────────────────────────────────────────────────
@@ -236,12 +203,6 @@
     let selectedId = null;
 
     const els = {
-      setupBox:         document.getElementById("setupBox"),
-      cfgPublicKey:     document.getElementById("cfgPublicKey"),
-      cfgServiceId:     document.getElementById("cfgServiceId"),
-      cfgTemplateId:    document.getElementById("cfgTemplateId"),
-      saveConfigBtn:    document.getElementById("saveConfigBtn"),
-      configStatus:     document.getElementById("configStatus"),
       messageList:      document.getElementById("messageList"),
       searchInput:      document.getElementById("searchInput"),
       filterStatus:     document.getElementById("filterStatus"),
@@ -266,33 +227,6 @@
       countApproved:    document.getElementById("countApproved"),
       countSent:        document.getElementById("countSent"),
     };
-
-    // ── Config panel ────────────────────────────────────────────────────────
-    function applyStoredConfig() {
-      const cfg = loadConfig();
-      if (cfg.publicKey)  els.cfgPublicKey.value  = cfg.publicKey;
-      if (cfg.serviceId)  els.cfgServiceId.value  = cfg.serviceId;
-      if (cfg.templateId) els.cfgTemplateId.value = cfg.templateId;
-      if (cfg.publicKey && cfg.serviceId && cfg.templateId) {
-        els.setupBox.classList.add("hidden");
-      }
-    }
-
-    els.saveConfigBtn.addEventListener("click", () => {
-      const cfg = {
-        publicKey:  els.cfgPublicKey.value.trim(),
-        serviceId:  els.cfgServiceId.value.trim(),
-        templateId: els.cfgTemplateId.value.trim(),
-      };
-      if (!cfg.publicKey || !cfg.serviceId || !cfg.templateId) {
-        els.configStatus.textContent = "Fill in all three fields.";
-        return;
-      }
-      saveConfig(cfg);
-      emailjs.init({ publicKey: cfg.publicKey });
-      els.configStatus.textContent = "Saved. Setup box will hide on next load.";
-      setTimeout(() => els.setupBox.classList.add("hidden"), 1500);
-    });
 
     // ── Supabase helpers ────────────────────────────────────────────────────
     function sbHeaders() {
@@ -503,7 +437,6 @@
 
     // ── Init ────────────────────────────────────────────────────────────────
     function init() {
-      applyStoredConfig();
       initEmailJS();
 
       els.searchInput.addEventListener("input",    renderAdmin);
