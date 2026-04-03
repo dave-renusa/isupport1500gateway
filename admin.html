@@ -1,3 +1,604 @@
-npx create-next-app@latest gateway-support-site
-cd gateway-support-site
-npm install @supabase/supabase-js lucide-react
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1500 Gateway Admin Review</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #34d399;
+      --radius: 24px;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(52, 211, 153, 0.14), transparent 22%),
+        radial-gradient(circle at left, rgba(20, 184, 166, 0.12), transparent 18%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(2, 6, 23, 0.88);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .title { font-size: 20px; font-weight: 700; }
+    main { padding: 28px 0 56px; }
+
+    .grid-3, .admin-grid, .support-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
+    .support-grid { grid-template-columns: 1fr 1fr; margin-top: 18px; }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); }
+    h2, h3 { margin: 10px 0 0; line-height: 1.15; }
+    h3 { font-size: 24px; }
+    .muted { color: var(--muted); line-height: 1.7; }
+
+    .field, .textarea, .select {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.72);
+      color: white;
+      padding: 14px 16px;
+      outline: none;
+    }
+
+    .field:focus, .textarea:focus, .select:focus { border-color: rgba(52, 211, 153, 0.65); }
+    .textarea { min-height: 160px; resize: vertical; }
+
+    .btn, .btn-soft, .status-btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 16px;
+      transition: 0.2s ease;
+      font-weight: 700;
+      padding: 14px 18px;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #052e27;
+    }
+
+    .btn-soft, .status-btn {
+      background: transparent;
+      color: white;
+      border: 1px solid var(--border);
+    }
+
+    .btn:hover, .btn-soft:hover, .status-btn:hover { transform: translateY(-1px); }
+
+    .button-row, .admin-toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .search-wrap { flex: 1; min-width: 220px; }
+
+    .recipient-box, .list-item, .message-box {
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.58);
+    }
+
+    .recipient-box, .list-item { padding: 16px; }
+    .message-box { padding: 18px; }
+
+    .list-scroll {
+      margin-top: 18px;
+      max-height: 650px;
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+      padding-right: 4px;
+    }
+
+    .list-item {
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .list-item.active {
+      border-color: rgba(52, 211, 153, 0.40);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+      border: 1px solid transparent;
+    }
+
+    .pending { color: #fde68a; background: rgba(251, 191, 36, 0.10); border-color: rgba(251,191,36,0.25); }
+    .approved { color: #bbf7d0; background: rgba(52, 211, 153, 0.10); border-color: rgba(52,211,153,0.25); }
+    .rejected { color: #fecaca; background: rgba(248, 113, 113, 0.10); border-color: rgba(248,113,113,0.25); }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .strong { font-weight: 700; }
+    .small { font-size: 14px; }
+    .tiny { font-size: 12px; color: var(--muted); }
+    .hidden { display: none !important; }
+
+    #passwordOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 24px;
+    }
+
+    .password-card {
+      width: 100%;
+      max-width: 460px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .password-card h2 {
+      margin: 10px 0 0;
+      font-size: 30px;
+    }
+
+    .password-error {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      background: rgba(248, 113, 113, 0.10);
+      color: #fee2e2;
+      font-size: 14px;
+      display: none;
+    }
+
+    @media (max-width: 960px) {
+      .grid-3, .admin-grid, .support-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="passwordOverlay">
+    <div class="password-card">
+      <div class="kicker">1500 Gateway</div>
+      <h2>Admin access</h2>
+      <p class="muted">Enter the password to review submissions.</p>
+
+      <label style="display:block; margin-top:18px;">
+        <span class="small strong">Password</span>
+        <input id="passwordInput" class="field" type="password" placeholder="Enter password" />
+      </label>
+
+      <div class="button-row">
+        <button id="unlockBtn" class="btn" type="button">Unlock</button>
+      </div>
+
+      <div id="passwordError" class="password-error">Wrong password.</div>
+    </div>
+  </div>
+
+  <div id="adminApp" class="hidden">
+    <header>
+      <div class="wrap header-row">
+        <div>
+          <div class="eyebrow">1500 Gateway</div>
+          <div class="title">Admin review</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="grid-3">
+        <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
+        <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
+        <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="card">
+          <div class="top-row">
+            <div>
+              <div class="kicker">Review queue</div>
+              <h3>Support messages</h3>
+            </div>
+            <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="search-wrap">
+              <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
+            </div>
+            <select class="select" id="filterStatus">
+              <option value="all">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div id="messageList" class="list-scroll"></div>
+        </div>
+
+        <div class="card">
+          <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
+
+          <div id="adminDetail" class="hidden">
+            <div class="top-row">
+              <div>
+                <div class="kicker">Message detail</div>
+                <h3 id="detailName"></h3>
+                <div class="muted small" id="detailLocality"></div>
+                <div class="small" style="color: var(--accent);" id="detailEmail"></div>
+              </div>
+              <div id="detailStatus" class="status-pill pending">pending</div>
+            </div>
+
+            <div class="button-row">
+              <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
+              <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
+              <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
+            </div>
+
+            <div class="message-box" style="margin-top:18px;">
+              <div class="strong">Support message</div>
+              <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
+            </div>
+
+            <div class="support-grid">
+              <div>
+                <div class="strong">Admin notes</div>
+                <textarea id="adminNotes" class="textarea" style="margin-top:12px;" placeholder="Add internal notes here"></textarea>
+                <div class="button-row">
+                  <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
+                  <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
+                </div>
+                <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
+              </div>
+              <div>
+                <div class="strong">Recipients</div>
+                <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "DaveIsTheBestCoder03";
+    const STORAGE_KEY = "gateway_admin_unlocked";
+
+    const SUPABASE_URL = ""; // paste your Supabase project URL here
+    const SUPABASE_ANON_KEY = ""; // paste your Supabase anon key here
+    const TABLE_NAME = "support_messages";
+
+    const councilRecipients = [
+      { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
+      { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
+      { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
+      { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
+      { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
+      { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
+      { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" }
+    ];
+
+    let messages = [];
+    let selectedId = null;
+
+    const els = {
+      passwordOverlay: document.getElementById("passwordOverlay"),
+      passwordInput: document.getElementById("passwordInput"),
+      unlockBtn: document.getElementById("unlockBtn"),
+      passwordError: document.getElementById("passwordError"),
+      adminApp: document.getElementById("adminApp"),
+
+      messageList: document.getElementById("messageList"),
+      searchInput: document.getElementById("searchInput"),
+      filterStatus: document.getElementById("filterStatus"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      adminDetailEmpty: document.getElementById("adminDetailEmpty"),
+      adminDetail: document.getElementById("adminDetail"),
+      detailName: document.getElementById("detailName"),
+      detailLocality: document.getElementById("detailLocality"),
+      detailEmail: document.getElementById("detailEmail"),
+      detailStatus: document.getElementById("detailStatus"),
+      detailMessage: document.getElementById("detailMessage"),
+      adminNotes: document.getElementById("adminNotes"),
+      adminSaveStatus: document.getElementById("adminSaveStatus"),
+      markApprovedBtn: document.getElementById("markApprovedBtn"),
+      markPendingBtn: document.getElementById("markPendingBtn"),
+      markRejectedBtn: document.getElementById("markRejectedBtn"),
+      saveNotesBtn: document.getElementById("saveNotesBtn"),
+      draftFromAdminBtn: document.getElementById("draftFromAdminBtn"),
+      recipientListAdmin: document.getElementById("recipientListAdmin"),
+      countAll: document.getElementById("countAll"),
+      countPending: document.getElementById("countPending"),
+      countApproved: document.getElementById("countApproved"),
+      countRejected: document.getElementById("countRejected")
+    };
+
+    function unlockAdmin() {
+      els.passwordOverlay.classList.add("hidden");
+      els.adminApp.classList.remove("hidden");
+      sessionStorage.setItem(STORAGE_KEY, "yes");
+      loadFromSupabase();
+    }
+
+    function checkPassword() {
+      if (els.passwordInput.value === ADMIN_PASSWORD) {
+        els.passwordError.style.display = "none";
+        unlockAdmin();
+      } else {
+        els.passwordError.style.display = "block";
+      }
+    }
+
+    function hasSupabaseConfig() {
+      return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+    }
+
+    function headers() {
+      return {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+      };
+    }
+
+    async function supabaseSelect() {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
+        method: "GET",
+        headers: headers()
+      });
+      if (!response.ok) throw new Error(await response.text());
+      return response.json();
+    }
+
+    async function supabaseUpdate(id, payload) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`, {
+        method: "PATCH",
+        headers: headers(),
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error(await response.text());
+    }
+
+    function renderRecipients(target, recipients) {
+      target.innerHTML = recipients.map((recipient) => `
+        <div class="recipient-box">
+          <div class="strong">${recipient.name}</div>
+          <div class="tiny">${recipient.role}</div>
+          <div class="small" style="color: var(--accent); margin-top: 6px;">${recipient.email}</div>
+        </div>
+      `).join("");
+    }
+
+    function getSelected() {
+      return messages.find((m) => m.id === selectedId) || null;
+    }
+
+    function statusClass(status) {
+      return status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending";
+    }
+
+    function updateCounts() {
+      const pending = messages.filter((m) => m.review_status === "pending").length;
+      const approved = messages.filter((m) => m.review_status === "approved").length;
+      const rejected = messages.filter((m) => m.review_status === "rejected").length;
+      els.countAll.textContent = String(messages.length);
+      els.countPending.textContent = String(pending);
+      els.countApproved.textContent = String(approved);
+      els.countRejected.textContent = String(rejected);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderAdmin() {
+      updateCounts();
+
+      const search = els.searchInput.value.trim().toLowerCase();
+      const filter = els.filterStatus.value;
+      const filtered = messages.filter((item) => {
+        const matchesFilter = filter === "all" || item.review_status === filter;
+        const hay = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
+        const matchesSearch = !search || hay.includes(search);
+        return matchesFilter && matchesSearch;
+      });
+
+      els.messageList.innerHTML = filtered.length ? filtered.map((item) => `
+        <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:start; flex-wrap:wrap;">
+            <div>
+              <div class="strong">${item.full_name}</div>
+              <div class="tiny">${item.locality}</div>
+              <div class="small" style="color: var(--accent); margin-top: 6px;">${item.email}</div>
+            </div>
+            <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
+          </div>
+          <div class="muted small" style="margin-top: 12px;">${escapeHtml(item.message).slice(0, 170)}${item.message.length > 170 ? "..." : ""}</div>
+        </div>
+      `).join("") : `<div class="recipient-box muted">No messages found.</div>`;
+
+      document.querySelectorAll(".list-item[data-id]").forEach((node) => {
+        node.addEventListener("click", () => {
+          selectedId = node.getAttribute("data-id");
+          renderAdmin();
+        });
+      });
+
+      const selected = getSelected();
+      if (!selected) {
+        els.adminDetailEmpty.classList.remove("hidden");
+        els.adminDetail.classList.add("hidden");
+        return;
+      }
+
+      els.adminDetailEmpty.classList.add("hidden");
+      els.adminDetail.classList.remove("hidden");
+      els.detailName.textContent = selected.full_name;
+      els.detailLocality.textContent = selected.locality;
+      els.detailEmail.textContent = selected.email;
+      els.detailMessage.textContent = selected.message;
+      els.detailStatus.textContent = selected.review_status;
+      els.detailStatus.className = `status-pill ${statusClass(selected.review_status)}`;
+      els.adminNotes.value = selected.admin_notes || "";
+      renderRecipients(els.recipientListAdmin, selected.recipients || councilRecipients);
+    }
+
+    async function loadFromSupabase() {
+      if (!hasSupabaseConfig()) {
+        els.messageList.innerHTML = `<div class="recipient-box muted">Add your Supabase URL and anon key in this file to load submissions.</div>`;
+        return;
+      }
+
+      try {
+        messages = await supabaseSelect();
+        selectedId = messages[0] ? messages[0].id : null;
+        els.adminSaveStatus.textContent = "";
+      } catch (error) {
+        els.messageList.innerHTML = `<div class="recipient-box muted">Could not load submissions. Check your Supabase settings.</div>`;
+        console.error(error);
+      }
+
+      renderAdmin();
+    }
+
+    async function saveSelectedStatus(nextStatus) {
+      const selected = getSelected();
+      if (!selected) return;
+      selected.review_status = nextStatus;
+      selected.admin_notes = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = "Saving...";
+      renderAdmin();
+
+      try {
+        await supabaseUpdate(selected.id, {
+          review_status: selected.review_status,
+          admin_notes: selected.admin_notes
+        });
+        els.adminSaveStatus.textContent = "Saved.";
+      } catch (error) {
+        els.adminSaveStatus.textContent = error.message || "Could not save.";
+      }
+    }
+
+    async function saveNotes() {
+      const selected = getSelected();
+      if (!selected) return;
+      selected.admin_notes = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = "Saving...";
+      try {
+        await supabaseUpdate(selected.id, { admin_notes: selected.admin_notes });
+        els.adminSaveStatus.textContent = "Saved.";
+      } catch (error) {
+        els.adminSaveStatus.textContent = error.message || "Could not save notes.";
+      }
+    }
+
+    function buildDraftLink(record) {
+      const emails = councilRecipients.map((r) => r.email).join(",");
+      const body = `${record.message}\n\nSincerely,\n${record.full_name}\n${record.locality}\n${record.email}`;
+      return `mailto:${emails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
+    }
+
+    function openSelectedDraft() {
+      const selected = getSelected();
+      if (!selected) return;
+      window.location.href = buildDraftLink(selected);
+    }
+
+    function init() {
+      els.unlockBtn.addEventListener("click", checkPassword);
+      els.passwordInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") checkPassword();
+      });
+
+      els.searchInput.addEventListener("input", renderAdmin);
+      els.filterStatus.addEventListener("change", renderAdmin);
+      els.refreshBtn.addEventListener("click", loadFromSupabase);
+      els.markApprovedBtn.addEventListener("click", () => saveSelectedStatus("approved"));
+      els.markPendingBtn.addEventListener("click", () => saveSelectedStatus("pending"));
+      els.markRejectedBtn.addEventListener("click", () => saveSelectedStatus("rejected"));
+      els.saveNotesBtn.addEventListener("click", saveNotes);
+      els.draftFromAdminBtn.addEventListener("click", openSelectedDraft);
+
+      if (sessionStorage.getItem(STORAGE_KEY) === "yes") {
+        unlockAdmin();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
