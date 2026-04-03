@@ -129,6 +129,7 @@
             </label>
             <div class="button-row">
               <button class="btn" id="submitBtn" type="submit">Submit for review</button>
+              <button class="btn-soft" id="sendYourselfBtn" type="button">Send email yourself</button>
             </div>
             <div id="publicStatus" class="status-note hidden"></div>
           </form>
@@ -184,6 +185,7 @@ Thank you.`;
       consent:             document.getElementById("consent"),
       publicStatus:        document.getElementById("publicStatus"),
       submitBtn:           document.getElementById("submitBtn"),
+      sendYourselfBtn:     document.getElementById("sendYourselfBtn"),
       recipientListPublic: document.getElementById("recipientListPublic"),
     };
 
@@ -251,10 +253,23 @@ Thank you.`;
       `).join("");
     }
 
+    function sendYourself() {
+      const toEmails = councilRecipients.map(r => r.email).join(",");
+      const name     = els.fullName.value.trim();
+      const locality = els.locality.value.trim();
+      const email    = els.email.value.trim();
+      const body     = (els.message.value.trim() || defaultMessage)
+        + "\n\nSincerely,\n" + (name || "[Your Name]")
+        + "\n" + (locality || "[Town/City/County]")
+        + "\n" + (email || "[Email Address]");
+      window.location.href = `mailto:${toEmails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
+    }
+
     function init() {
       els.message.value = defaultMessage;
       renderRecipients();
       els.supportForm.addEventListener("submit", submitForm);
+      els.sendYourselfBtn.addEventListener("click", sendYourself);
     }
 
     init();
