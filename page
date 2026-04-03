@@ -1,0 +1,688 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { CheckCircle2, Clock3, Mail, MessageSquare, Search, Shield, XCircle } from "lucide-react";
+
+type ReviewStatus = "pending" | "approved" | "rejected";
+
+type SupportMessage = {
+  id: string;
+  full_name: string;
+  email: string;
+  locality: string;
+  message: string;
+  consent: boolean;
+  review_status: ReviewStatus;
+  admin_notes: string | null;
+  recipients: { name: string; role: string; email: string }[];
+  created_at_client?: string | null;
+  created_at?: string | null;
+};
+
+const councilRecipients = [
+  { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
+  { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
+  { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
+  { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
+  { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
+  { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
+  { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" },
+];
+
+const defaultMessage = `Dear Mayor Devine and Members of City Council,
+
+I am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.
+
+I believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.
+
+Please include my comments in the public record as a statement of support for the project.
+
+Thank you for your time and consideration.`;
+
+const demoData: SupportMessage[] = [
+  {
+    id: "1",
+    full_name: "Jane Smith",
+    email: "jane@example.com",
+    locality: "Fredericksburg, VA",
+    message: "I support the 1500 Gateway project because I believe it can bring long-term tax revenue and support city services while being handled responsibly.",
+    consent: true,
+    review_status: "pending",
+    admin_notes: null,
+    recipients: councilRecipients,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    full_name: "Marcus Allen",
+    email: "marcus@example.com",
+    locality: "Spotsylvania County, VA",
+    message: "Please consider my support for the project. I think economic development matters, and I appreciate the need for strong construction and safety commitments.",
+    consent: true,
+    review_status: "approved",
+    admin_notes: "Solid note. Ready for supporter follow-up.",
+    recipients: councilRecipients,
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+  },
+];
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return null;
+  return createClient(url, anonKey);
+}
+
+export default function GatewaySupportApp() {
+  const [view, setView] = useState<"public" | "admin">("public");
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+          <div>
+            <div className="text-xs uppercase tracking-[0.28em] text-emerald-300">1500 Gateway</div>
+            <div className="text-lg font-semibold">Community support site + review dashboard</div>
+          </div>
+          <div className="flex gap-2 rounded-2xl border border-white/10 bg-white/5 p-1">
+            <button
+              onClick={() => setView("public")}
+              className={`rounded-xl px-4 py-2 text-sm font-medium ${view === "public" ? "bg-emerald-400 text-slate-950" : "text-slate-200"}`}
+            >
+              Public page
+            </button>
+            <button
+              onClick={() => setView("admin")}
+              className={`rounded-xl px-4 py-2 text-sm font-medium ${view === "admin" ? "bg-emerald-400 text-slate-950" : "text-slate-200"}`}
+            >
+              Admin review
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {view === "public" ? <PublicPage /> : <AdminPage />}
+    </div>
+  );
+}
+
+function PublicPage() {
+  const recipientList = useMemo(() => councilRecipients.map((r) => r.email).join(","), []);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    locality: "",
+    message: defaultMessage,
+    consent: true,
+  });
+  const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState("");
+
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const { name, value, type } = event.target;
+    const checked = type === "checkbox" && "checked" in event.target ? event.target.checked : false;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus("saving");
+    setStatusMessage("Saving your message for review...");
+
+    try {
+      const supabase = getSupabase();
+      const payload = {
+        full_name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        locality: formData.locality.trim(),
+        message: formData.message.trim(),
+        consent: formData.consent,
+        review_status: "pending",
+        admin_notes: null,
+        recipients: councilRecipients,
+        created_at_client: new Date().toISOString(),
+      };
+
+      if (supabase) {
+        const { error } = await supabase.from("support_messages").insert(payload);
+        if (error) throw error;
+      }
+
+      setStatus("success");
+      setStatusMessage(
+        supabase
+          ? "Thanks. Your message has been submitted for review."
+          : "Preview mode: Supabase is not connected yet, so nothing was saved."
+      );
+      setFormData({
+        fullName: "",
+        email: "",
+        locality: "",
+        message: defaultMessage,
+        consent: true,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong.";
+      setStatus("error");
+      setStatusMessage(message);
+    }
+  }
+
+  const draftMailto = `mailto:${recipientList}?subject=${encodeURIComponent(
+    "Support for 1500 Gateway"
+  )}&body=${encodeURIComponent(
+    `${formData.message}\n\nSincerely,\n${formData.fullName || "[Your Name]"}\n${formData.locality || "[Town/City/County]"}\n${formData.email || "[Email Address]"}`
+  )}`;
+
+  return (
+    <main>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(52,211,153,0.18),transparent_28%),radial-gradient(circle_at_left,rgba(20,184,166,0.16),transparent_22%)]" />
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
+          <div className="relative z-10">
+            <div className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">
+              Fredericksburg, Virginia
+            </div>
+            <h1 className="max-w-2xl text-4xl font-bold tracking-tight md:text-6xl">
+              Built for people who want to support 1500 Gateway.
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-slate-300 md:text-lg">
+              A simple public page with a community-first tone. Supporters can add their names, where they are from, and a message for City Council. Messages go into review first.
+            </p>
+            <div className="mt-8 grid max-w-xl gap-4 sm:grid-cols-3">
+              <StatCard icon={<MessageSquare className="h-5 w-5" />} label="Simple form" value="Name, email, locality, message" />
+              <StatCard icon={<Shield className="h-5 w-5" />} label="Review flow" value="Saved as pending" />
+              <StatCard icon={<Mail className="h-5 w-5" />} label="Outreach" value="Supporter sends final email" />
+            </div>
+          </div>
+
+          <div className="relative z-10 rounded-[2rem] border border-emerald-400/20 bg-emerald-400/5 p-6 shadow-xl shadow-emerald-900/10">
+            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Support form</div>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight">Share your support</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+              This page stores messages for review. It does not send as the supporter automatically. No funny business. Cleaner that way.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Full name" name="fullName" placeholder="Jane Smith" value={formData.fullName} onChange={handleChange} />
+                <Field label="Email address" name="email" placeholder="jane@example.com" type="email" value={formData.email} onChange={handleChange} />
+              </div>
+              <Field label="Town / city / county" name="locality" placeholder="Fredericksburg, VA" value={formData.locality} onChange={handleChange} />
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-200">Support message</span>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={11}
+                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
+                />
+              </label>
+              <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  name="consent"
+                  checked={formData.consent}
+                  onChange={handleChange}
+                  className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-950"
+                />
+                <span>
+                  I understand my message will be submitted for review and coordination. Any later outreach should preserve my meaning and clearly reflect how it is being sent.
+                </span>
+              </label>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="submit"
+                  disabled={status === "saving"}
+                  className="rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {status === "saving" ? "Saving..." : "Submit for review"}
+                </button>
+                <a href={draftMailto} className="rounded-2xl border border-white/15 px-5 py-3 text-sm font-semibold text-white hover:bg-white/5">
+                  Preview personal email draft
+                </a>
+              </div>
+
+              {statusMessage ? (
+                <div
+                  className={`rounded-2xl border p-4 text-sm ${
+                    status === "error"
+                      ? "border-red-400/30 bg-red-400/10 text-red-100"
+                      : "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
+                  }`}
+                >
+                  {statusMessage}
+                </div>
+              ) : null}
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16">
+        <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Why this setup works</div>
+            <h3 className="mt-2 text-2xl font-semibold">Built for public support, not public headaches</h3>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <FeatureBox title="Editable message" body="People can use the starter text or replace it with their own. Nothing is locked down." />
+              <FeatureBox title="Review queue" body="Every submission lands with a pending status so you can check it before any next step." />
+              <FeatureBox title="Council-ready" body="The draft email is already addressed to all seven Fredericksburg City Council members." />
+              <FeatureBox title="Image-ready" body="The page is laid out so we can drop in renderings, maps, and graphics later without redoing the whole thing." />
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Recipients</div>
+            <h3 className="mt-2 text-2xl font-semibold">Fredericksburg City Council</h3>
+            <div className="mt-5 space-y-3">
+              {councilRecipients.map((recipient) => (
+                <div key={recipient.email} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+                  <div className="font-semibold text-white">{recipient.name}</div>
+                  <div className="text-sm text-slate-400">{recipient.role}</div>
+                  <a href={`mailto:${recipient.email}`} className="mt-1 block text-sm text-emerald-300 hover:text-emerald-200">
+                    {recipient.email}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function AdminPage() {
+  const supabase = getSupabase();
+  const [items, setItems] = useState<SupportMessage[]>(demoData);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | ReviewStatus>("all");
+  const [selected, setSelected] = useState<SupportMessage | null>(demoData[0]);
+  const [saveStatus, setSaveStatus] = useState("");
+
+  async function loadMessages() {
+    if (!supabase) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("support_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      const typed = data as SupportMessage[];
+      setItems(typed);
+      setSelected((current) => typed.find((item) => item.id === current?.id) || typed[0] || null);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadMessages();
+  }, []);
+
+  const filteredItems = items.filter((item) => {
+    const matchesFilter = filter === "all" ? true : item.review_status === filter;
+    const haystack = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
+    const matchesSearch = haystack.includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  async function updateMessage(updates: Partial<SupportMessage>) {
+    if (!selected) return;
+    const next = { ...selected, ...updates };
+    setSelected(next);
+    setItems((current) => current.map((item) => (item.id === next.id ? next : item)));
+    setSaveStatus("Saving...");
+
+    if (!supabase) {
+      setSaveStatus("Preview mode only. Connect Supabase to save changes.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("support_messages")
+      .update({
+        review_status: next.review_status,
+        admin_notes: next.admin_notes,
+      })
+      .eq("id", next.id);
+
+    setSaveStatus(error ? error.message : "Saved.");
+  }
+
+  const counts = {
+    all: items.length,
+    pending: items.filter((item) => item.review_status === "pending").length,
+    approved: items.filter((item) => item.review_status === "approved").length,
+    rejected: items.filter((item) => item.review_status === "rejected").length,
+  };
+
+  return (
+    <main className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mb-6 grid gap-4 md:grid-cols-4">
+        <DashboardStat label="Total submissions" value={String(counts.all)} icon={<MessageSquare className="h-5 w-5" />} />
+        <DashboardStat label="Pending" value={String(counts.pending)} icon={<Clock3 className="h-5 w-5" />} />
+        <DashboardStat label="Approved" value={String(counts.approved)} icon={<CheckCircle2 className="h-5 w-5" />} />
+        <DashboardStat label="Rejected" value={String(counts.rejected)} icon={<XCircle className="h-5 w-5" />} />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[0.95fr,1.05fr]">
+        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Review queue</div>
+              <h2 className="mt-2 text-2xl font-semibold">Support messages</h2>
+            </div>
+            <button onClick={loadMessages} className="rounded-2xl border border-white/15 px-4 py-2 text-sm font-medium text-white hover:bg-white/5">
+              {loading ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <label className="relative flex-1 min-w-[220px]">
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search name, email, place, message"
+                className="w-full rounded-2xl border border-white/10 bg-slate-900 px-10 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
+              />
+            </label>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as "all" | ReviewStatus)}
+              className="rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none focus:border-emerald-400/60"
+            >
+              <option value="all">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div className="mt-5 space-y-3 max-h-[650px] overflow-auto pr-1">
+            {filteredItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setSelected(item)}
+                className={`w-full rounded-2xl border p-4 text-left transition ${selected?.id === item.id ? "border-emerald-400/40 bg-emerald-400/10" : "border-white/10 bg-slate-900/60 hover:bg-white/5"}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-white">{item.full_name}</div>
+                    <div className="text-sm text-slate-400">{item.locality}</div>
+                    <div className="mt-1 text-sm text-emerald-300">{item.email}</div>
+                  </div>
+                  <StatusBadge status={item.review_status} />
+                </div>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{item.message}</p>
+              </button>
+            ))}
+            {filteredItems.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-400">
+                No messages found.
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+          {selected ? (
+            <AdminDetailCard selected={selected} saveStatus={saveStatus} onUpdate={updateMessage} />
+          ) : (
+            <div className="flex min-h-[300px] items-center justify-center rounded-2xl border border-dashed border-white/10 text-slate-400">
+              Select a message to review.
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function AdminDetailCard({
+  selected,
+  saveStatus,
+  onUpdate,
+}: {
+  selected: SupportMessage;
+  saveStatus: string;
+  onUpdate: (updates: Partial<SupportMessage>) => void;
+}) {
+  const [notes, setNotes] = useState(selected.admin_notes || "");
+
+  useEffect(() => {
+    setNotes(selected.admin_notes || "");
+  }, [selected.id]);
+
+  const recipientList = selected.recipients.map((r) => r.email).join(",");
+  const draftLink = `mailto:${recipientList}?subject=${encodeURIComponent(
+    "Support for 1500 Gateway"
+  )}&body=${encodeURIComponent(
+    `${selected.message}\n\nSincerely,\n${selected.full_name}\n${selected.locality}\n${selected.email}`
+  )}`;
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Message detail</div>
+          <h2 className="mt-2 text-2xl font-semibold">{selected.full_name}</h2>
+          <div className="mt-2 text-sm text-slate-400">{selected.locality}</div>
+          <div className="text-sm text-emerald-300">{selected.email}</div>
+        </div>
+        <StatusBadge status={selected.review_status} />
+      </div>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <ActionButton label="Mark approved" onClick={() => onUpdate({ review_status: "approved", admin_notes: notes })} />
+        <ActionButton label="Mark pending" onClick={() => onUpdate({ review_status: "pending", admin_notes: notes })} />
+        <ActionButton label="Mark rejected" onClick={() => onUpdate({ review_status: "rejected", admin_notes: notes })} />
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+        <div className="text-sm font-semibold text-white">Support message</div>
+        <div className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">{selected.message}</div>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,0.95fr]">
+        <div>
+          <div className="text-sm font-semibold text-white">Admin notes</div>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={7}
+            className="mt-3 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
+            placeholder="Add internal notes here"
+          />
+          <div className="mt-3 flex flex-wrap gap-3">
+            <button
+              onClick={() => onUpdate({ admin_notes: notes })}
+              className="rounded-2xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950"
+            >
+              Save notes
+            </button>
+            <a href={draftLink} className="rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/5">
+              Open supporter email draft
+            </a>
+          </div>
+          {saveStatus ? <div className="mt-3 text-sm text-slate-400">{saveStatus}</div> : null}
+        </div>
+
+        <div>
+          <div className="text-sm font-semibold text-white">Recipients</div>
+          <div className="mt-3 space-y-3">
+            {selected.recipients.map((recipient) => (
+              <div key={recipient.email} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+                <div className="font-medium text-white">{recipient.name}</div>
+                <div className="text-sm text-slate-400">{recipient.role}</div>
+                <div className="text-sm text-emerald-300">{recipient.email}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  name,
+  placeholder,
+  value,
+  type = "text",
+  onChange,
+}: {
+  label: string;
+  name: string;
+  placeholder: string;
+  value: string;
+  type?: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium text-slate-200">{label}</span>
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
+        required
+      />
+    </label>
+  );
+}
+
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div className="flex items-center gap-2 text-emerald-300">{icon}<span className="text-xs uppercase tracking-[0.2em]">{label}</span></div>
+      <div className="mt-2 text-sm font-semibold text-white">{value}</div>
+    </div>
+  );
+}
+
+function FeatureBox({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+      <div className="font-semibold text-white">{title}</div>
+      <div className="mt-2 text-sm leading-6 text-slate-300">{body}</div>
+    </div>
+  );
+}
+
+function DashboardStat({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+  return (
+    <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5">
+      <div className="flex items-center gap-2 text-emerald-300">{icon}<span className="text-xs uppercase tracking-[0.2em]">{label}</span></div>
+      <div className="mt-3 text-3xl font-bold text-white">{value}</div>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: ReviewStatus }) {
+  const styles = {
+    pending: "border-amber-400/30 bg-amber-400/10 text-amber-200",
+    approved: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
+    rejected: "border-red-400/30 bg-red-400/10 text-red-200",
+  };
+
+  return <div className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${styles[status]}`}>{status}</div>;
+}
+
+function ActionButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/5">
+      {label}
+    </button>
+  );
+}
+
+/*
+PROJECT FILES TO CREATE IN A REAL NEXT.JS APP
+
+app/page.tsx
+- Use the PublicPage component
+
+app/admin/page.tsx
+- Use the AdminPage component
+- Protect it with auth or middleware
+
+lib/supabase.ts
+import { createClient } from '@supabase/supabase-js'
+export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+
+middleware.ts
+- Protect /admin with basic auth, Clerk, or Supabase Auth
+
+OPTIONAL API ROUTE
+app/api/send-approved/route.ts
+- Only use for a clearly labeled org-sent message
+- Better path: generate supporter draft and let them send it themselves
+
+SUPABASE SQL
+create extension if not exists pgcrypto;
+
+create table if not exists support_messages (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  locality text not null,
+  message text not null,
+  consent boolean not null default false,
+  review_status text not null default 'pending' check (review_status in ('pending','approved','rejected')),
+  admin_notes text,
+  recipients jsonb not null,
+  created_at_client timestamptz,
+  created_at timestamptz not null default now()
+);
+
+alter table support_messages enable row level security;
+
+create policy "public_insert_support_messages"
+on support_messages
+for insert
+to anon, authenticated
+with check (true);
+
+create policy "authenticated_read_support_messages"
+on support_messages
+for select
+to authenticated
+using (true);
+
+create policy "authenticated_update_support_messages"
+on support_messages
+for update
+to authenticated
+using (true)
+with check (true);
+
+PACKAGES
+npm install @supabase/supabase-js lucide-react
+
+ENV
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+NOTES
+- This canvas version combines the public page and admin page in one file so it previews cleanly.
+- In the real project, split them into separate files.
+- Right now it falls back to demo data when Supabase is not connected.
+- Add images later without changing the flow.
+*/
