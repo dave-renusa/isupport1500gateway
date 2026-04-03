@@ -11,7 +11,7 @@
       --border: #eef0f2;
       --text: #1a1a1a;
       --muted: #555555;
-      --accent: #006838; /* Penzance Green variant */
+      --accent: #006838; 
       --accent-soft: #f0f7f4;
       --radius: 12px;
     }
@@ -25,7 +25,7 @@
       line-height: 1.6;
     }
 
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
     header {
       padding: 30px 0;
@@ -36,83 +36,102 @@
     /* Action Section (Form & Lead) */
     .hero-split {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 50px;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
       padding: 60px 0;
       align-items: start;
     }
 
-    h1 { font-size: 48px; line-height: 1.1; margin-bottom: 20px; font-weight: 800; }
-    .lead-text { font-size: 19px; color: var(--muted); margin-bottom: 30px; }
+    h1 { font-size: 52px; line-height: 1.1; margin-bottom: 24px; font-weight: 800; letter-spacing: -1px; }
+    .lead-text { font-size: 20px; color: var(--muted); margin-bottom: 30px; }
 
     .form-container {
       background: #ffffff;
       padding: 40px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     }
 
     .form-group { margin-bottom: 20px; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 15px; }
     input, textarea {
       width: 100%;
-      padding: 12px 15px;
+      padding: 14px 18px;
       border: 1px solid #dcdcdc;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
       background: #fff;
     }
-    textarea { min-height: 140px; resize: vertical; }
+    textarea { min-height: 320px; resize: vertical; }
 
-    .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
     .btn {
-      padding: 14px;
-      border-radius: 6px;
+      padding: 16px;
+      border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
       border: none;
       transition: 0.2s ease;
-      font-size: 15px;
+      font-size: 16px;
     }
     .btn-main { background: var(--accent); color: #fff; }
     .btn-alt { background: #f4f4f4; color: var(--text); }
-    .btn:hover { filter: brightness(1.1); }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* Impact List */
+    .impact-list { list-style: none; padding: 0; margin: 25px 0; }
+    .impact-list li { 
+      margin-bottom: 15px; 
+      padding-left: 28px; 
+      position: relative; 
+      font-size: 17px;
+    }
+    .impact-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 900;
+    }
 
     /* Data Sections */
     section { padding: 80px 0; border-top: 1px solid var(--border); }
-    h2 { font-size: 32px; margin-bottom: 40px; text-align: center; font-weight: 800; }
+    h2 { font-size: 36px; margin-bottom: 40px; text-align: center; font-weight: 800; }
 
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
     }
 
     .info-card {
-      padding: 30px;
+      padding: 40px;
       background: var(--panel);
       border-radius: var(--radius);
       border: 1px solid var(--border);
+      text-align: center;
     }
-    .card-val { font-size: 40px; font-weight: 800; color: var(--accent); display: block; }
-    .card-label { font-weight: 700; font-size: 17px; display: block; margin: 10px 0; }
-    .card-text { font-size: 15px; color: var(--muted); }
+    .card-val { font-size: 48px; font-weight: 800; color: var(--accent); display: block; }
+    .card-label { font-weight: 700; font-size: 19px; display: block; margin: 12px 0; }
+    .card-text { font-size: 16px; color: var(--muted); }
 
     /* Comparison Table */
     .table-wrap { overflow-x: auto; margin-top: 20px; }
     table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--border); }
-    th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: #fafafa; font-size: 13px; text-transform: uppercase; color: var(--muted); }
-    .highlight-cell { background-color: var(--accent-soft); font-weight: 600; color: var(--accent); }
+    th, td { padding: 20px; text-align: left; border-bottom: 1px solid var(--border); font-size: 16px; }
+    th { background: #fafafa; font-size: 14px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
+    .highlight-cell { background-color: var(--accent-soft); font-weight: 700; color: var(--accent); }
 
-    .status-msg { margin-top: 15px; padding: 12px; border-radius: 4px; font-size: 14px; display: none; }
+    .status-msg { margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 14px; display: none; }
     .status-msg.error { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; display: block; }
     .status-msg.success { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; display: block; }
 
-    @media (max-width: 850px) {
-      .hero-split { grid-template-columns: 1fr; }
-      h1 { font-size: 36px; }
+    .sub-instruction { font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 4px; display: block; }
+
+    @media (max-width: 950px) {
+      .hero-split { grid-template-columns: 1fr; gap: 40px; }
+      h1 { font-size: 40px; }
       .btn-container { grid-template-columns: 1fr; }
     }
   </style>
@@ -130,42 +149,53 @@
     <div>
       <h1>A Better Neighbor for Fredericksburg.</h1>
       <p class="lead-text">
-        The 1500 Gateway Data Center Campus is the lower-impact option for our city. Compared to mixed-use development, this project provides a transformative economic boost while significantly reducing the strain on local infrastructure[cite: 61].
+        The 1500 Gateway Data Center Campus is the lower-impact option for our city, delivering transformative benefits without the burdens of traditional development.
       </p>
       
-      <div style="background: var(--accent-soft); padding: 25px; border-radius: var(--radius);">
-        <h4 style="margin:0 0 10px 0; color: var(--accent); font-size: 18px;">Direct School Funding</h4>
-        <p style="margin:0; font-size: 16px;">
-          The project generates <strong>$6.3 million annually</strong> for local schools [cite: 93, 95]—translating to an additional <strong>$1,762 investment</strong> per student, every single year[cite: 103, 105].
+      <div style="background: var(--accent-soft); padding: 35px; border-radius: var(--radius); border-left: 5px solid var(--accent);">
+        <h4 style="margin:0 0 15px 0; color: var(--accent); font-size: 22px; font-weight: 800;">Direct Funding for Our Schools</h4>
+        <p style="margin:0 0 20px 0; font-size: 18px; line-height: 1.5;">
+          This project provides a <strong>19% increase</strong> in local school funding, generating <strong>$6.3 million</strong> in new yearly revenue for the district.
         </p>
+        <ul class="impact-list">
+          <li><strong>$1,762 Additional Investment:</strong> Every student receives this extra funding, every single year.</li>
+          <li><strong>$22,909 Per Student:</strong> Total additional investment over a single student's K-12 career.</li>
+          <li><strong>Zero School Overcrowding:</strong> Unlike residential development, the data center generates <strong>0 new students</strong>.</li>
+          <li><strong>Zero Strain:</strong> Provides massive funding while requiring no new classrooms or bus routes.</li>
+        </ul>
       </div>
+      
+      <p style="margin-top: 30px; font-size: 17px; color: var(--muted);">
+        Compare this to typical mixed-use development, which would add roughly 228 students to our system while generating only a fraction of the tax revenue.
+      </p>
     </div>
 
     <div class="form-container" id="support">
-      <h3 style="margin-top: 0; font-size: 22px;">Submit Your Support</h3>
-      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Add your voice to help bring these benefits to Fredericksburg.</p>
+      <h3 style="margin-top: 0; font-size: 24px; font-weight: 800;">Submit Your Support</h3>
+      <p style="font-size: 15px; color: var(--muted); margin-bottom: 25px;">Your voice matters. Send a message to the City Council today.</p>
       
       <form id="supportForm">
         <div class="form-group">
           <label>Full Name</label>
-          <input type="text" id="fullName" placeholder="Name" required>
+          <input type="text" id="fullName" placeholder="Your Name" required>
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" id="email" placeholder="email@address.com" required>
+          <input type="email" id="email" placeholder="email@example.com" required>
         </div>
         <div class="form-group">
           <label>City / Locality</label>
           <input type="text" id="locality" placeholder="Fredericksburg, VA" required>
         </div>
         <div class="form-group">
+          <span class="sub-instruction">Feel free to add your own message</span>
           <label>Your Message</label>
           <textarea id="message"></textarea>
         </div>
         
-        <label style="display: flex; gap: 10px; align-items: flex-start; font-weight: 400; cursor: pointer; margin-bottom: 15px;">
+        <label style="display: flex; gap: 12px; align-items: flex-start; font-weight: 400; cursor: pointer; margin-bottom: 20px;">
           <input type="checkbox" id="consent" style="width: auto; margin-top: 4px;" required>
-          <span style="font-size: 13px;">I support 1500 Gateway and authorize this message for City Council.</span>
+          <span style="font-size: 14px;">I support 1500 Gateway and authorize this message to be shared with the City Council.</span>
         </label>
 
         <div id="publicStatus" class="status-msg"></div>
@@ -179,42 +209,34 @@
   </section>
 
   <section id="jobs">
-    <h2>Jobs & Economic Opportunity</h2>
+    <h2>High-Quality Local Jobs</h2>
     <div class="grid-3">
       <div class="info-card">
         <span class="card-val">108</span>
-        <span class="card-label">Permanent High-Wage Jobs</span>
-        <p class="card-text">Direct operational roles with an average salary of <strong>$100,000</strong>[cite: 80, 82, 90].</p>
+        <span class="card-label">Permanent Roles</span>
+        <p class="card-text">Direct operational jobs with an average annual wage of <strong>$100,000</strong>.</p>
       </div>
       <div class="info-card">
         <span class="card-val">488</span>
-        <span class="card-label">Total Annual Jobs</span>
-        <p class="card-text">Total jobs supported annually once the campus is at full operation[cite: 78].</p>
+        <span class="card-label">Annual Total</span>
+        <p class="card-text">Total jobs supported across the community at full campus operation.</p>
       </div>
       <div class="info-card">
-        <span class="card-val">2,140+</span>
+        <span class="card-val">2,140</span>
         <span class="card-label">Construction Jobs</span>
-        <p class="card-text">Peak jobs supported during the construction phase in 2029[cite: 79].</p>
+        <p class="card-text">Peak workforce supported during the 2029 construction phase.</p>
       </div>
-    </div>
-    
-    
-
-    <div style="margin-top: 40px; text-align: center;">
-      <p style="max-width: 800px; margin: 0 auto; font-size: 18px;">
-        At full buildout, the 1500 Gateway campus will generate <strong>$23.4 million</strong> in stable, recurring annual tax revenue for the City of Fredericksburg[cite: 92].
-      </p>
     </div>
   </section>
 
   <section id="impact">
     <h2>Community Impact Comparison</h2>
-    <p style="text-align:center; margin-bottom: 30px; color: var(--muted);">How the Data Center compares to Mixed-Use development[cite: 3].</p>
+    <p style="text-align:center; margin-bottom: 40px; color: var(--muted); font-size: 18px;">A data center is the lower-impact option in every category that affects daily life.</p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>Category</th>
+            <th>Metric</th>
             <th>1500 Gateway (Data Center)</th>
             <th>Mixed-Use Development</th>
           </tr>
@@ -222,36 +244,41 @@
         <tbody>
           <tr>
             <td><strong>Daily Vehicle Trips</strong></td>
-            <td class="highlight-cell">750 (94% Fewer) [cite: 6, 14]</td>
-            <td>12,085 [cite: 6, 15]</td>
+            <td class="highlight-cell">750 (94% Fewer)</td>
+            <td>12,085</td>
           </tr>
           <tr>
             <td><strong>Annual Tax Revenue</strong></td>
-            <td class="highlight-cell">$26.5M (12.5x More) [cite: 7, 50, 53]</td>
-            <td>$2.2M [cite: 52]</td>
+            <td class="highlight-cell">$26.5M (12.5x More)</td>
+            <td>$2.2M</td>
           </tr>
           <tr>
             <td><strong>Students Generated</strong></td>
-            <td class="highlight-cell">0 (Zero Impact) [cite: 17, 23]</td>
-            <td>228 [cite: 24]</td>
+            <td class="highlight-cell">0 (No School Impact)</td>
+            <td>228</td>
           </tr>
           <tr>
             <td><strong>Open Space</strong></td>
-            <td class="highlight-cell">36.09 Acres (189% More) [cite: 42, 44]</td>
-            <td>12.51 Acres [cite: 46]</td>
+            <td class="highlight-cell">36.09 Acres (189% More)</td>
+            <td>12.51 Acres</td>
           </tr>
           <tr>
             <td><strong>Water/Sewer Demand</strong></td>
-            <td class="highlight-cell">2,700 GPD (99.11% Less) [cite: 9, 25, 26]</td>
-            <td>303,880 GPD [cite: 9, 27]</td>
+            <td class="highlight-cell">2,700 GPD (99% Less)</td>
+            <td>303,880 GPD</td>
+          </tr>
+          <tr>
+            <td><strong>CO2 Emissions</strong></td>
+            <td class="highlight-cell">208t / year (67% Less)</td>
+            <td>621t / year</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <footer style="text-align: center; padding: 60px 0; color: #999; font-size: 13px;">
-    &copy; 2026 Penzance | Building Value, Creating Communities [cite: 2, 62]
+  <footer style="text-align: center; padding: 60px 0; color: #999; font-size: 14px; border-top: 1px solid var(--border);">
+    &copy; 2026 Penzance | Building Value, Creating Communities
   </footer>
 </main>
 
@@ -268,11 +295,11 @@
 
     const defaultMsg = `Dear City Council,
 
-I am writing to express my support for the 1500 Gateway project. 
+I am writing to share my strong support for the 1500 Gateway project. 
 
-I believe this data center campus is the right choice for Fredericksburg's future. It provides critical funding for our schools ($6.3M annually) and generates significant tax revenue without the traffic or school overcrowding associated with other development options.
+I believe this data center campus is the best path forward for Fredericksburg. It provides essential funding for our schools ($6.3M annually) and brings significant tax revenue to our city without adding traffic congestion or overcrowding our classrooms.
 
-Please support this high-benefit, low-impact project.`;
+Please support this high-benefit development.`;
 
     const els = {
       form: document.getElementById("supportForm"),
