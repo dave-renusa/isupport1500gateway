@@ -3,212 +3,300 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1500 Gateway Support Portal</title>
+  <title>1500 Gateway | Community Support</title>
   <style>
     :root {
       --bg: #ffffff;
-      --panel: #f8fafc;
-      --panel-soft: #ffffff;
-      --border: rgba(15, 23, 42, 0.12);
-      --text: #0f172a;
-      --muted: #334155;
-      --accent: #059669;
-      --radius: 24px;
-      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --panel: #fcfcfc;
+      --border: #eef0f2;
+      --text: #1a1a1a;
+      --muted: #555555;
+      --accent: #006838; /* Penzance Green variant */
+      --accent-soft: #f0f7f4;
+      --radius: 12px;
     }
+
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
-    a { color: inherit; text-decoration: none; }
-    button, input, textarea { font: inherit; }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-    header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(255,255,255,0.94); }
-    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; flex-wrap: wrap; }
-    .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
-    .title { font-size: 24px; font-weight: 800; }
-    main { padding: 36px 0 64px; }
-    .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: start; padding: 30px 0 20px; }
-    .badge { display: inline-block; padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(5,150,105,0.22); background: rgba(5,150,105,0.08); color: #065f46; font-size: 13px; font-weight: 700; }
-    h1 { font-size: clamp(48px, 7vw, 78px); line-height: 1.02; margin: 20px 0 0; letter-spacing: -0.04em; color: var(--text); }
-    p.lead { font-size: 22px; line-height: 1.75; color: var(--muted); max-width: 760px; margin-top: 20px; }
-    .stats-grid, .support-grid, .grid-3 { display: grid; gap: 20px; }
-    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; max-width: 820px; }
-    .support-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 32px; }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 24px; }
-    .card, .panel { border: 1px solid var(--border); background: var(--panel-soft); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .panel { background: linear-gradient(180deg, rgba(5,150,105,0.05), #ffffff); padding: 28px; }
-    .card { padding: 26px; }
-    .stat-card, .mini-card { padding: 20px; border-radius: 20px; border: 1px solid var(--border); background: #ffffff; }
-    .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; }
-    h2, h3 { margin: 12px 0 0; line-height: 1.15; color: var(--text); }
-    h2 { font-size: 40px; }
-    h3 { font-size: 28px; }
-    .muted { color: var(--muted); line-height: 1.8; font-size: 17px; }
-    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .field, .textarea { width: 100%; border-radius: 18px; border: 1px solid var(--border); background: #ffffff; color: var(--text); padding: 16px 18px; outline: none; font-size: 17px; }
-    .field:focus, .textarea:focus { border-color: rgba(5,150,105,0.65); }
-    .textarea { min-height: 220px; resize: vertical; }
-    label { display: block; }
-    .label { display: block; margin-bottom: 10px; font-size: 16px; font-weight: 700; color: var(--text); }
-    .consent { display: flex; gap: 12px; align-items: flex-start; padding: 18px; border-radius: 20px; border: 1px solid var(--border); background: #f8fafc; margin-top: 16px; }
-    .btn, .btn-soft { border: 0; cursor: pointer; border-radius: 16px; transition: 0.2s ease; font-weight: 800; padding: 16px 20px; font-size: 16px; }
-    .btn { background: var(--accent); color: #ffffff; }
-    .btn-soft { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn:hover, .btn-soft:hover { transform: translateY(-1px); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
-    .recipient-box { border-radius: 20px; border: 1px solid var(--border); background: #ffffff; padding: 18px; }
-    .status-note { margin-top: 16px; padding: 16px 18px; border-radius: 18px; font-size: 15px; border: 1px solid rgba(5,150,105,0.20); background: rgba(5,150,105,0.08); color: #065f46; }
-    .status-note.error { border-color: rgba(220,38,38,0.18); background: rgba(220,38,38,0.08); color: #991b1b; }
-    .strong { font-weight: 800; }
-    .small { font-size: 16px; }
-    .tiny { font-size: 13px; color: var(--muted); }
-    .hidden { display: none !important; }
-    @media (max-width: 960px) {
-      .hero, .support-grid, .grid-3, .stats-grid { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 48px; }
-      h2 { font-size: 34px; }
-      h3 { font-size: 26px; }
-      p.lead { font-size: 20px; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    header {
+      padding: 30px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-area { font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Action Section (Form & Lead) */
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 50px;
+      padding: 60px 0;
+      align-items: start;
+    }
+
+    h1 { font-size: 48px; line-height: 1.1; margin-bottom: 20px; font-weight: 800; }
+    .lead-text { font-size: 19px; color: var(--muted); margin-bottom: 30px; }
+
+    .form-container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    input, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #dcdcdc;
+      border-radius: 6px;
+      font-size: 16px;
+      background: #fff;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+
+    .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .btn {
+      padding: 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s ease;
+      font-size: 15px;
+    }
+    .btn-main { background: var(--accent); color: #fff; }
+    .btn-alt { background: #f4f4f4; color: var(--text); }
+    .btn:hover { filter: brightness(1.1); }
+
+    /* Data Sections */
+    section { padding: 80px 0; border-top: 1px solid var(--border); }
+    h2 { font-size: 32px; margin-bottom: 40px; text-align: center; font-weight: 800; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .info-card {
+      padding: 30px;
+      background: var(--panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .card-val { font-size: 40px; font-weight: 800; color: var(--accent); display: block; }
+    .card-label { font-weight: 700; font-size: 17px; display: block; margin: 10px 0; }
+    .card-text { font-size: 15px; color: var(--muted); }
+
+    /* Comparison Table */
+    .table-wrap { overflow-x: auto; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--border); }
+    th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #fafafa; font-size: 13px; text-transform: uppercase; color: var(--muted); }
+    .highlight-cell { background-color: var(--accent-soft); font-weight: 600; color: var(--accent); }
+
+    .status-msg { margin-top: 15px; padding: 12px; border-radius: 4px; font-size: 14px; display: none; }
+    .status-msg.error { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; display: block; }
+    .status-msg.success { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; display: block; }
+
+    @media (max-width: 850px) {
+      .hero-split { grid-template-columns: 1fr; }
+      h1 { font-size: 36px; }
+      .btn-container { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap header-row">
-      <div>
-        <div class="eyebrow">1500 Gateway</div>
-        <div class="title">Community support portal</div>
+
+<header>
+  <div class="wrap logo-area">
+    Penzance | 1500 Gateway
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero-split" style="border:none;">
+    <div>
+      <h1>A Better Neighbor for Fredericksburg.</h1>
+      <p class="lead-text">
+        The 1500 Gateway Data Center Campus is the lower-impact option for our city. Compared to mixed-use development, this project provides a transformative economic boost while significantly reducing the strain on local infrastructure[cite: 61].
+      </p>
+      
+      <div style="background: var(--accent-soft); padding: 25px; border-radius: var(--radius);">
+        <h4 style="margin:0 0 10px 0; color: var(--accent); font-size: 18px;">Direct School Funding</h4>
+        <p style="margin:0; font-size: 16px;">
+          The project generates <strong>$6.3 million annually</strong> for local schools [cite: 93, 95]—translating to an additional <strong>$1,762 investment</strong> per student, every single year[cite: 103, 105].
+        </p>
       </div>
     </div>
-  </header>
 
-  <main class="wrap">
-    <section>
-      <div class="hero">
-        <div>
-          <div class="badge">Fredericksburg, Virginia</div>
-          <h1>Built for people who want to support 1500 Gateway.</h1>
-          <p class="lead">
-            Share your support for 1500 Gateway. Your message goes to our review team first. Once approved, we will help coordinate sending it to city leaders.
-          </p>
-          <div class="stats-grid">
-            <div class="stat-card"><div class="kicker">Simple form</div><h3>Name, email, locality, message</h3></div>
-            <div class="stat-card"><div class="kicker">Review flow</div><h3>Saved as pending</h3></div>
-            <div class="stat-card"><div class="kicker">Outreach</div><h3>Sent with your name attached</h3></div>
-          </div>
+    <div class="form-container" id="support">
+      <h3 style="margin-top: 0; font-size: 22px;">Submit Your Support</h3>
+      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Add your voice to help bring these benefits to Fredericksburg.</p>
+      
+      <form id="supportForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Name" required>
         </div>
-
-        <div class="panel">
-          <div class="kicker">Support form</div>
-          <h2>Share your support</h2>
-          <p class="muted">Your message is reviewed before it goes anywhere. We will not change your meaning.</p>
-
-          <form id="supportForm">
-            <div class="form-grid">
-              <label>
-                <span class="label">Full name</span>
-                <input class="field" id="fullName" required placeholder="Jane Smith" />
-              </label>
-              <label>
-                <span class="label">Email address</span>
-                <input class="field" id="email" required type="email" placeholder="jane@example.com" />
-              </label>
-            </div>
-            <label style="margin-top:16px; display:block;">
-              <span class="label">Town / city / county</span>
-              <input class="field" id="locality" required placeholder="Fredericksburg, VA" />
-            </label>
-            <label style="margin-top:16px; display:block;">
-              <span class="label">Support message</span>
-              <textarea class="textarea" id="message"></textarea>
-            </label>
-            <label class="consent">
-              <input id="consent" type="checkbox" required />
-              <span class="small">I understand my message will be submitted for review and coordination. Any later outreach will preserve my meaning and clearly reflect how it is being sent.</span>
-            </label>
-            <div class="button-row">
-              <button class="btn" id="submitBtn" type="submit">Send Email</button>
-              <button class="btn-soft" id="sendYourselfBtn" type="button">Send email yourself</button>
-            </div>
-            <div id="publicStatus" class="status-note hidden"></div>
-          </form>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="email@address.com" required>
         </div>
+        <div class="form-group">
+          <label>City / Locality</label>
+          <input type="text" id="locality" placeholder="Fredericksburg, VA" required>
+        </div>
+        <div class="form-group">
+          <label>Your Message</label>
+          <textarea id="message"></textarea>
+        </div>
+        
+        <label style="display: flex; gap: 10px; align-items: flex-start; font-weight: 400; cursor: pointer; margin-bottom: 15px;">
+          <input type="checkbox" id="consent" style="width: auto; margin-top: 4px;" required>
+          <span style="font-size: 13px;">I support 1500 Gateway and authorize this message for City Council.</span>
+        </label>
+
+        <div id="publicStatus" class="status-msg"></div>
+
+        <div class="btn-container">
+          <button type="submit" id="submitBtn" class="btn btn-main">Submit Support</button>
+          <button type="button" id="sendYourselfBtn" class="btn btn-alt">Email Council Directly</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="jobs">
+    <h2>Jobs & Economic Opportunity</h2>
+    <div class="grid-3">
+      <div class="info-card">
+        <span class="card-val">108</span>
+        <span class="card-label">Permanent High-Wage Jobs</span>
+        <p class="card-text">Direct operational roles with an average salary of <strong>$100,000</strong>[cite: 80, 82, 90].</p>
       </div>
-
-      <div class="support-grid">
-        <div class="card">
-          <div class="kicker">Why this setup works</div>
-          <h3>Built for public support, not public headaches</h3>
-          <div class="grid-3">
-            <div class="mini-card"><div class="strong">Editable message</div><div class="muted small">Use the starter text or replace it with your own words.</div></div>
-            <div class="mini-card"><div class="strong">Review queue</div><div class="muted small">Every submission lands as pending so we can check it before it goes out.</div></div>
-            <div class="mini-card"><div class="strong">Your voice</div><div class="muted small">Outreach goes out with your name and locality, representing you directly.</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="kicker">Review team</div>
-          <h3>RenUSA</h3>
-          <div id="recipientListPublic" style="margin-top:16px; display:grid; gap:12px;"></div>
-        </div>
+      <div class="info-card">
+        <span class="card-val">488</span>
+        <span class="card-label">Total Annual Jobs</span>
+        <p class="card-text">Total jobs supported annually once the campus is at full operation[cite: 78].</p>
       </div>
-    </section>
-  </main>
+      <div class="info-card">
+        <span class="card-val">2,140+</span>
+        <span class="card-label">Construction Jobs</span>
+        <p class="card-text">Peak jobs supported during the construction phase in 2029[cite: 79].</p>
+      </div>
+    </div>
+    
+    
 
-  <script>
-    const SUPABASE_URL    = "https://csxvtewzlhigrzvpxtvf.supabase.co";
+    <div style="margin-top: 40px; text-align: center;">
+      <p style="max-width: 800px; margin: 0 auto; font-size: 18px;">
+        At full buildout, the 1500 Gateway campus will generate <strong>$23.4 million</strong> in stable, recurring annual tax revenue for the City of Fredericksburg[cite: 92].
+      </p>
+    </div>
+  </section>
+
+  <section id="impact">
+    <h2>Community Impact Comparison</h2>
+    <p style="text-align:center; margin-bottom: 30px; color: var(--muted);">How the Data Center compares to Mixed-Use development[cite: 3].</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>1500 Gateway (Data Center)</th>
+            <th>Mixed-Use Development</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Daily Vehicle Trips</strong></td>
+            <td class="highlight-cell">750 (94% Fewer) [cite: 6, 14]</td>
+            <td>12,085 [cite: 6, 15]</td>
+          </tr>
+          <tr>
+            <td><strong>Annual Tax Revenue</strong></td>
+            <td class="highlight-cell">$26.5M (12.5x More) [cite: 7, 50, 53]</td>
+            <td>$2.2M [cite: 52]</td>
+          </tr>
+          <tr>
+            <td><strong>Students Generated</strong></td>
+            <td class="highlight-cell">0 (Zero Impact) [cite: 17, 23]</td>
+            <td>228 [cite: 24]</td>
+          </tr>
+          <tr>
+            <td><strong>Open Space</strong></td>
+            <td class="highlight-cell">36.09 Acres (189% More) [cite: 42, 44]</td>
+            <td>12.51 Acres [cite: 46]</td>
+          </tr>
+          <tr>
+            <td><strong>Water/Sewer Demand</strong></td>
+            <td class="highlight-cell">2,700 GPD (99.11% Less) [cite: 9, 25, 26]</td>
+            <td>303,880 GPD [cite: 9, 27]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 60px 0; color: #999; font-size: 13px;">
+    &copy; 2026 Penzance | Building Value, Creating Communities [cite: 2, 62]
+  </footer>
+</main>
+
+<script>
+    const SUPABASE_URL = "https://csxvtewzlhigrzvpxtvf.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9";
-    const TABLE_NAME      = "support_messages";
+    const TABLE_NAME = "support_messages";
 
-    const councilRecipients = [
-      { name: "Dave",  role: "RenUSA", email: "dave@renusa.org" },
-      { name: "Chad",  role: "RenUSA", email: "chad@renusa.org" },
-      { name: "John",  role: "RenUSA", email: "john@renusa.org" }
+    const recipients = [
+      { email: "dave@renusa.org" },
+      { email: "chad@renusa.org" },
+      { email: "john@renusa.org" }
     ];
 
-    const defaultMessage = `Dear Dave, Chad, and John,
+    const defaultMsg = `Dear City Council,
 
-I am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.
+I am writing to express my support for the 1500 Gateway project. 
 
-I believe this project represents an opportunity to strengthen the City's tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.
+I believe this data center campus is the right choice for Fredericksburg's future. It provides critical funding for our schools ($6.3M annually) and generates significant tax revenue without the traffic or school overcrowding associated with other development options.
 
-Please consider this note as part of the supporter review process.
-
-Thank you.`;
+Please support this high-benefit, low-impact project.`;
 
     const els = {
-      supportForm:         document.getElementById("supportForm"),
-      fullName:            document.getElementById("fullName"),
-      email:               document.getElementById("email"),
-      locality:            document.getElementById("locality"),
-      message:             document.getElementById("message"),
-      consent:             document.getElementById("consent"),
-      publicStatus:        document.getElementById("publicStatus"),
-      submitBtn:           document.getElementById("submitBtn"),
-      sendYourselfBtn:     document.getElementById("sendYourselfBtn"),
-      recipientListPublic: document.getElementById("recipientListPublic"),
+      form: document.getElementById("supportForm"),
+      fullName: document.getElementById("fullName"),
+      email: document.getElementById("email"),
+      locality: document.getElementById("locality"),
+      message: document.getElementById("message"),
+      consent: document.getElementById("consent"),
+      status: document.getElementById("publicStatus"),
+      submitBtn: document.getElementById("submitBtn"),
+      sendSelfBtn: document.getElementById("sendYourselfBtn")
     };
 
-    function setStatus(msg, isError = false) {
-      els.publicStatus.textContent = msg;
-      els.publicStatus.classList.remove("hidden", "error");
-      if (isError) els.publicStatus.classList.add("error");
+    function showStatus(text, type = 'success') {
+      els.status.textContent = text;
+      els.status.className = 'status-msg ' + type;
     }
 
-    function headers() {
-      return {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      };
-    }
-
-    async function submitForm(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
       els.submitBtn.disabled = true;
-      setStatus("Saving your message for review...");
+      showStatus("Sending your message...", 'success');
 
-      const record = {
+      const data = {
         id: crypto.randomUUID(),
         full_name: els.fullName.value.trim(),
         email: els.email.value.trim(),
@@ -216,63 +304,43 @@ Thank you.`;
         message: els.message.value.trim(),
         consent: els.consent.checked,
         review_status: "pending",
-        admin_notes: "",
-        recipients: councilRecipients,
         created_at: new Date().toISOString(),
       };
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
           method: "POST",
-          headers: { ...headers(), Prefer: "return=minimal" },
-          body: JSON.stringify(record),
+          headers: { 
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: "return=minimal" 
+          },
+          body: JSON.stringify(data),
         });
 
-        if (!res.ok) {
-          const err = await res.text();
-          throw new Error(err);
-        }
+        if (!res.ok) throw new Error();
 
-        setStatus("Thank you. Your message has been submitted for review. We will be in touch.");
-        els.supportForm.reset();
-        els.message.value = defaultMessage;
+        showStatus("Thank you! Your support has been submitted.", 'success');
+        els.form.reset();
+        els.message.value = defaultMsg;
       } catch (err) {
-        setStatus(err.message || "Something went wrong. Please try again.", true);
+        showStatus("Submission error. Please try again or use the email button.", 'error');
       } finally {
         els.submitBtn.disabled = false;
       }
     }
 
-    function renderRecipients() {
-      els.recipientListPublic.innerHTML = councilRecipients.map(r => `
-        <div class="recipient-box">
-          <div class="strong">${r.name}</div>
-          <div class="tiny">${r.role}</div>
-          <div class="small" style="color: var(--accent); margin-top: 6px;">${r.email}</div>
-        </div>
-      `).join("");
+    function sendEmail() {
+      const emails = recipients.map(r => r.email).join(",");
+      const body = encodeURIComponent(`${els.message.value}\n\nFrom: ${els.fullName.value}\nLocality: ${els.locality.value}`);
+      window.location.href = `mailto:${emails}?subject=Support for 1500 Gateway&body=${body}`;
     }
 
-    function sendYourself() {
-      const toEmails = councilRecipients.map(r => r.email).join(",");
-      const name     = els.fullName.value.trim();
-      const locality = els.locality.value.trim();
-      const email    = els.email.value.trim();
-      const body     = (els.message.value.trim() || defaultMessage)
-        + "\n\nSincerely,\n" + (name || "[Your Name]")
-        + "\n" + (locality || "[Town/City/County]")
-        + "\n" + (email || "[Email Address]");
-      window.location.href = `mailto:${toEmails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
-    }
+    els.message.value = defaultMsg;
+    els.form.addEventListener("submit", handleSubmit);
+    els.sendSelfBtn.addEventListener("click", sendEmail);
+</script>
 
-    function init() {
-      els.message.value = defaultMessage;
-      renderRecipients();
-      els.supportForm.addEventListener("submit", submitForm);
-      els.sendYourselfBtn.addEventListener("click", sendYourself);
-    }
-
-    init();
-  </script>
 </body>
 </html>
