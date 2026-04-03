@@ -783,3 +783,117 @@
       renderAdmin();
       try {
         if (hasSupabaseConfig()) {
+          await supabaseUpdate(selected.id, {
+            review_status: selected.review_status,
+            admin_notes: selected.admin_notes
+          });
+          els.adminSaveStatus.textContent = "Saved.";
+        }
+      } catch (error) {
+        els.adminSaveStatus.textContent = error.message || "Could not save.";
+      }
+    }
+
+    async function saveNotes() {
+      const selected = getSelected();
+      if (!selected) return;
+      selected.admin_notes = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = hasSupabaseConfig() ? "Saving..." : "Preview mode only. Notes are not saved online.";
+      try {
+        if (hasSupabaseConfig()) {
+          await supabaseUpdate(selected.id, { admin_notes: selected.admin_notes });
+          els.adminSaveStatus.textContent = "Saved.";
+        }
+      } catch (error) {
+        els.adminSaveStatus.textContent = error.message || "Could not save notes.";
+      }
+    }
+
+    function openSelectedDraft() {
+      const selected = getSelected();
+      if (!selected) return;
+      window.location.href = buildDraftLink(selected);
+    }
+
+    function init() {
+      els.message.value = defaultMessage;
+      renderRecipients(els.recipientListPublic, councilRecipients);
+      renderAdmin();
+
+      els.showPublicBtn.addEventListener("click", showPublic);
+      els.showAdminBtn.addEventListener("click", showAdmin);
+      els.supportForm.addEventListener("submit", submitForm);
+      els.previewDraftBtn.addEventListener("click", previewDraft);
+      els.searchInput.addEventListener("input", renderAdmin);
+      els.filterStatus.addEventListener("change", renderAdmin);
+      els.refreshBtn.addEventListener("click", loadFromSupabase);
+      els.markApprovedBtn.addEventListener("click", () => saveSelectedStatus("approved"));
+      els.markPendingBtn.addEventListener("click", () => saveSelectedStatus("pending"));
+      els.markRejectedBtn.addEventListener("click", () => saveSelectedStatus("rejected"));
+      els.saveNotesBtn.addEventListener("click", saveNotes);
+      els.draftFromAdminBtn.addEventListener("click", openSelectedDraft);
+
+      loadFromSupabase();
+    }
+
+    init();
+  </script>
+
+  <!--
+  SUPABASE SQL
+
+  create extension if not exists pgcrypto;
+
+  create table if not exists support_messages (
+    id uuid primary key default gen_random_uuid(),
+    full_name text not null,
+    email text not null,
+    locality text not null,
+    message text not null,
+    consent boolean not null default false,
+    review_status text not null default 'pending' check (review_status in ('pending','approved','rejected')),
+    admin_notes text,
+    recipients jsonb not null,
+    created_at_client timestamptz,
+    created_at timestamptz not null default now()
+  );
+
+  alter table support_messages enable row level security;
+
+  create policy "public_insert_support_messages"
+  on support_messages
+  for insert
+  to anon, authenticated
+  with check (true);
+
+  create policy "authenticated_read_support_messages"
+  on support_messages
+  for select
+  to anon, authenticated
+  using (true);
+
+  create policy "authenticated_update_support_messages"
+  on support_messages
+  for update
+  to anon, authenticated
+  using (true)
+  with check (true);
+
+  HOW TO USE THIS HTML FILE
+
+  1) Save this as index.html
+  2) Double-click it to open in your browser
+  3) It works immediately in preview mode with demo data
+  4) To connect Supabase, paste your project URL and anon key into the two constants in the script block
+  5) Put this file into a GitHub repo as-is if you want a very simple static site
+
+  IMPORTANT
+  This keeps the safer workflow:
+  - supporter submits message
+  - you review it
+  - supporter sends the final email draft from their own account
+
+  It does not spoof the sender.
+  -->
+</body>
+</html>
