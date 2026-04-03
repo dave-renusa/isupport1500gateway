@@ -13,9 +13,6 @@
       --text: #e2e8f0;
       --muted: #94a3b8;
       --accent: #34d399;
-      --accent-dark: #052e27;
-      --danger: #f87171;
-      --warning: #fbbf24;
       --radius: 24px;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     }
@@ -32,8 +29,7 @@
     }
 
     a { color: inherit; text-decoration: none; }
-    button, input, textarea, select { font: inherit; }
-
+    button, input, textarea { font: inherit; }
     .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
 
     header {
@@ -63,35 +59,6 @@
     }
 
     .title { font-size: 20px; font-weight: 700; }
-
-    .toggle-group {
-      display: inline-flex;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 4px;
-      background: var(--panel-soft);
-      gap: 4px;
-    }
-
-    .toggle-btn, .btn, .btn-soft, .status-btn {
-      border: 0;
-      cursor: pointer;
-      border-radius: 16px;
-      transition: 0.2s ease;
-    }
-
-    .toggle-btn {
-      background: transparent;
-      color: var(--text);
-      padding: 10px 16px;
-      font-weight: 600;
-    }
-
-    .toggle-btn.active {
-      background: var(--accent);
-      color: #06281f;
-    }
-
     main { padding: 28px 0 56px; }
 
     .hero {
@@ -128,14 +95,14 @@
       margin-top: 18px;
     }
 
-    .grid-3, .stats-grid, .support-grid, .admin-grid {
+    .stats-grid, .support-grid, .grid-3 {
       display: grid;
       gap: 18px;
     }
 
     .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; max-width: 760px; }
+    .support-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 22px; }
-    .support-grid, .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
 
     .card, .panel {
       border: 1px solid var(--border);
@@ -164,7 +131,7 @@
       gap: 16px;
     }
 
-    .field, .textarea, .select {
+    .field, .textarea {
       width: 100%;
       border-radius: 18px;
       border: 1px solid var(--border);
@@ -174,7 +141,7 @@
       outline: none;
     }
 
-    .field:focus, .textarea:focus, .select:focus { border-color: rgba(52, 211, 153, 0.65); }
+    .field:focus, .textarea:focus { border-color: rgba(52, 211, 153, 0.65); }
     .textarea { min-height: 220px; resize: vertical; }
     label { display: block; }
     .label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
@@ -190,22 +157,27 @@
       margin-top: 16px;
     }
 
-    .btn {
-      padding: 14px 18px;
-      background: var(--accent);
-      color: #052e27;
+    .btn, .btn-soft {
+      border: 0;
+      cursor: pointer;
+      border-radius: 16px;
+      transition: 0.2s ease;
       font-weight: 700;
+      padding: 14px 18px;
     }
 
-    .btn:hover, .toggle-btn:hover, .status-btn:hover { transform: translateY(-1px); }
+    .btn {
+      background: var(--accent);
+      color: #052e27;
+    }
 
-    .btn-soft, .status-btn {
-      padding: 14px 18px;
+    .btn-soft {
       background: transparent;
       color: white;
       border: 1px solid var(--border);
-      font-weight: 700;
     }
+
+    .btn:hover, .btn-soft:hover { transform: translateY(-1px); }
 
     .button-row {
       display: flex;
@@ -214,14 +186,12 @@
       margin-top: 18px;
     }
 
-    .message-box, .list-item, .recipient-box {
+    .recipient-box {
       border-radius: 20px;
       border: 1px solid var(--border);
       background: rgba(2, 6, 23, 0.58);
+      padding: 16px;
     }
-
-    .message-box { padding: 18px; }
-    .recipient-box, .list-item { padding: 16px; }
 
     .status-note {
       margin-top: 16px;
@@ -239,63 +209,13 @@
       color: #fee2e2;
     }
 
-    .admin-toolbar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .search-wrap { flex: 1; min-width: 220px; }
-
-    .list-scroll {
-      margin-top: 18px;
-      max-height: 650px;
-      overflow: auto;
-      display: grid;
-      gap: 12px;
-      padding-right: 4px;
-    }
-
-    .list-item {
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .list-item.active {
-      border-color: rgba(52, 211, 153, 0.40);
-      background: rgba(52, 211, 153, 0.12);
-    }
-
-    .status-pill {
-      display: inline-block;
-      padding: 7px 11px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: capitalize;
-      border: 1px solid transparent;
-    }
-
-    .pending { color: #fde68a; background: rgba(251, 191, 36, 0.10); border-color: rgba(251,191,36,0.25); }
-    .approved { color: #bbf7d0; background: rgba(52, 211, 153, 0.10); border-color: rgba(52,211,153,0.25); }
-    .rejected { color: #fecaca; background: rgba(248, 113, 113, 0.10); border-color: rgba(248,113,113,0.25); }
-
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-      flex-wrap: wrap;
-    }
-
+    .strong { font-weight: 700; }
     .small { font-size: 14px; }
     .tiny { font-size: 12px; color: var(--muted); }
-    .strong { font-weight: 700; }
     .hidden { display: none !important; }
 
     @media (max-width: 960px) {
-      .hero, .support-grid, .admin-grid, .grid-3, .stats-grid { grid-template-columns: 1fr; }
+      .hero, .support-grid, .grid-3, .stats-grid { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr; }
       h1 { font-size: 42px; }
     }
@@ -306,17 +226,13 @@
     <div class="wrap header-row">
       <div>
         <div class="eyebrow">1500 Gateway</div>
-        <div class="title">Community support site + review dashboard</div>
-      </div>
-      <div class="toggle-group">
-        <button id="showPublicBtn" class="toggle-btn active" type="button">Public page</button>
-        <button id="showAdminBtn" class="toggle-btn" type="button">Admin review</button>
+        <div class="title">Community support portal</div>
       </div>
     </div>
   </header>
 
   <main class="wrap">
-    <section id="publicView">
+    <section>
       <div class="hero">
         <div>
           <div class="badge">Fredericksburg, Virginia</div>
@@ -391,83 +307,6 @@
         </div>
       </div>
     </section>
-
-    <section id="adminView" class="hidden">
-      <div class="grid-3">
-        <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
-        <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
-        <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
-      </div>
-
-      <div class="admin-grid">
-        <div class="card">
-          <div class="top-row">
-            <div>
-              <div class="kicker">Review queue</div>
-              <h3>Support messages</h3>
-            </div>
-            <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
-          </div>
-
-          <div class="admin-toolbar">
-            <div class="search-wrap">
-              <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
-            </div>
-            <select class="select" id="filterStatus">
-              <option value="all">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-
-          <div id="messageList" class="list-scroll"></div>
-        </div>
-
-        <div class="card">
-          <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
-
-          <div id="adminDetail" class="hidden">
-            <div class="top-row">
-              <div>
-                <div class="kicker">Message detail</div>
-                <h3 id="detailName"></h3>
-                <div class="muted small" id="detailLocality"></div>
-                <div class="small" style="color: var(--accent);" id="detailEmail"></div>
-              </div>
-              <div id="detailStatus" class="status-pill pending">pending</div>
-            </div>
-
-            <div class="button-row">
-              <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
-              <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
-              <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
-            </div>
-
-            <div class="message-box" style="margin-top:18px;">
-              <div class="strong">Support message</div>
-              <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
-            </div>
-
-            <div class="support-grid" style="margin-top:18px;">
-              <div>
-                <div class="strong">Admin notes</div>
-                <textarea id="adminNotes" class="textarea" style="min-height:160px; margin-top:12px;" placeholder="Add internal notes here"></textarea>
-                <div class="button-row">
-                  <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
-                  <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
-                </div>
-                <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
-              </div>
-              <div>
-                <div class="strong">Recipients</div>
-                <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <script>
@@ -487,40 +326,7 @@
 
     const defaultMessage = `Dear Mayor Devine and Members of City Council,\n\nI am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.\n\nI believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.\n\nPlease include my comments in the public record as a statement of support for the project.\n\nThank you for your time and consideration.`;
 
-    let messages = [
-      {
-        id: crypto.randomUUID(),
-        full_name: "Jane Smith",
-        email: "jane@example.com",
-        locality: "Fredericksburg, VA",
-        message: "I support the 1500 Gateway project because I believe it can bring long-term tax revenue and support city services while being handled responsibly.",
-        consent: true,
-        review_status: "pending",
-        admin_notes: "",
-        recipients: councilRecipients,
-        created_at: new Date().toISOString()
-      },
-      {
-        id: crypto.randomUUID(),
-        full_name: "Marcus Allen",
-        email: "marcus@example.com",
-        locality: "Spotsylvania County, VA",
-        message: "Please consider my support for the project. I think economic development matters, and I appreciate the need for strong construction and safety commitments.",
-        consent: true,
-        review_status: "approved",
-        admin_notes: "Solid note. Ready for supporter follow-up.",
-        recipients: councilRecipients,
-        created_at: new Date(Date.now() - 86400000).toISOString()
-      }
-    ];
-
-    let selectedId = messages[0]?.id || null;
-
     const els = {
-      publicView: document.getElementById("publicView"),
-      adminView: document.getElementById("adminView"),
-      showPublicBtn: document.getElementById("showPublicBtn"),
-      showAdminBtn: document.getElementById("showAdminBtn"),
       supportForm: document.getElementById("supportForm"),
       fullName: document.getElementById("fullName"),
       email: document.getElementById("email"),
@@ -529,30 +335,7 @@
       consent: document.getElementById("consent"),
       publicStatus: document.getElementById("publicStatus"),
       previewDraftBtn: document.getElementById("previewDraftBtn"),
-      recipientListPublic: document.getElementById("recipientListPublic"),
-      recipientListAdmin: document.getElementById("recipientListAdmin"),
-      messageList: document.getElementById("messageList"),
-      searchInput: document.getElementById("searchInput"),
-      filterStatus: document.getElementById("filterStatus"),
-      refreshBtn: document.getElementById("refreshBtn"),
-      adminDetailEmpty: document.getElementById("adminDetailEmpty"),
-      adminDetail: document.getElementById("adminDetail"),
-      detailName: document.getElementById("detailName"),
-      detailLocality: document.getElementById("detailLocality"),
-      detailEmail: document.getElementById("detailEmail"),
-      detailStatus: document.getElementById("detailStatus"),
-      detailMessage: document.getElementById("detailMessage"),
-      adminNotes: document.getElementById("adminNotes"),
-      adminSaveStatus: document.getElementById("adminSaveStatus"),
-      markApprovedBtn: document.getElementById("markApprovedBtn"),
-      markPendingBtn: document.getElementById("markPendingBtn"),
-      markRejectedBtn: document.getElementById("markRejectedBtn"),
-      saveNotesBtn: document.getElementById("saveNotesBtn"),
-      draftFromAdminBtn: document.getElementById("draftFromAdminBtn"),
-      countAll: document.getElementById("countAll"),
-      countPending: document.getElementById("countPending"),
-      countApproved: document.getElementById("countApproved"),
-      countRejected: document.getElementById("countRejected")
+      recipientListPublic: document.getElementById("recipientListPublic")
     };
 
     function hasSupabaseConfig() {
@@ -577,24 +360,6 @@
       return response.json();
     }
 
-    async function supabaseSelect() {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
-        method: "GET",
-        headers: headers()
-      });
-      if (!response.ok) throw new Error(await response.text());
-      return response.json();
-    }
-
-    async function supabaseUpdate(id, payload) {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`, {
-        method: "PATCH",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      if (!response.ok) throw new Error(await response.text());
-    }
-
     function renderRecipients(target, recipients) {
       target.innerHTML = recipients.map((recipient) => `
         <div class="recipient-box">
@@ -611,101 +376,10 @@
       if (isError) els.publicStatus.classList.add("error");
     }
 
-    function showPublic() {
-      els.publicView.classList.remove("hidden");
-      els.adminView.classList.add("hidden");
-      els.showPublicBtn.classList.add("active");
-      els.showAdminBtn.classList.remove("active");
-    }
-
-    function showAdmin() {
-      els.adminView.classList.remove("hidden");
-      els.publicView.classList.add("hidden");
-      els.showAdminBtn.classList.add("active");
-      els.showPublicBtn.classList.remove("active");
-      renderAdmin();
-    }
-
     function buildDraftLink(record) {
       const emails = councilRecipients.map((r) => r.email).join(",");
       const body = `${record.message}\n\nSincerely,\n${record.full_name || "[Your Name]"}\n${record.locality || "[Town/City/County]"}\n${record.email || "[Email Address]"}`;
       return `mailto:${emails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
-    }
-
-    function getSelected() {
-      return messages.find((m) => m.id === selectedId) || null;
-    }
-
-    function statusClass(status) {
-      return status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending";
-    }
-
-    function updateCounts() {
-      const pending = messages.filter((m) => m.review_status === "pending").length;
-      const approved = messages.filter((m) => m.review_status === "approved").length;
-      const rejected = messages.filter((m) => m.review_status === "rejected").length;
-      els.countAll.textContent = String(messages.length);
-      els.countPending.textContent = String(pending);
-      els.countApproved.textContent = String(approved);
-      els.countRejected.textContent = String(rejected);
-    }
-
-    function renderAdmin() {
-      updateCounts();
-
-      const search = els.searchInput.value.trim().toLowerCase();
-      const filter = els.filterStatus.value;
-      const filtered = messages.filter((item) => {
-        const matchesFilter = filter === "all" || item.review_status === filter;
-        const hay = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
-        const matchesSearch = !search || hay.includes(search);
-        return matchesFilter && matchesSearch;
-      });
-
-      els.messageList.innerHTML = filtered.length ? filtered.map((item) => `
-        <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
-          <div class="top-row">
-            <div>
-              <div class="strong">${item.full_name}</div>
-              <div class="tiny">${item.locality}</div>
-              <div class="small" style="color: var(--accent); margin-top: 6px;">${item.email}</div>
-            </div>
-            <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
-          </div>
-          <div class="muted small" style="margin-top: 12px;">${escapeHtml(item.message).slice(0, 170)}${item.message.length > 170 ? "..." : ""}</div>
-        </div>
-      `).join("") : `<div class="recipient-box muted">No messages found.</div>`;
-
-      document.querySelectorAll(".list-item[data-id]").forEach((node) => {
-        node.addEventListener("click", () => {
-          selectedId = node.getAttribute("data-id");
-          renderAdmin();
-        });
-      });
-
-      const selected = getSelected();
-      if (!selected) {
-        els.adminDetailEmpty.classList.remove("hidden");
-        els.adminDetail.classList.add("hidden");
-        return;
-      }
-
-      els.adminDetailEmpty.classList.add("hidden");
-      els.adminDetail.classList.remove("hidden");
-      els.detailName.textContent = selected.full_name;
-      els.detailLocality.textContent = selected.locality;
-      els.detailEmail.textContent = selected.email;
-      els.detailMessage.textContent = selected.message;
-      els.detailStatus.textContent = selected.review_status;
-      els.detailStatus.className = `status-pill ${statusClass(selected.review_status)}`;
-      els.adminNotes.value = selected.admin_notes || "";
-      renderRecipients(els.recipientListAdmin, selected.recipients || councilRecipients);
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
     }
 
     async function submitForm(event) {
@@ -728,23 +402,15 @@
 
       try {
         if (hasSupabaseConfig()) {
-          const inserted = await supabaseInsert(record);
-          if (Array.isArray(inserted) && inserted[0]) {
-            messages.unshift(inserted[0]);
-          } else {
-            messages.unshift(record);
-          }
+          await supabaseInsert(record);
           setPublicStatus("Thanks. Your message has been submitted for review.");
         } else {
-          messages.unshift(record);
-          setPublicStatus("Preview mode only. Supabase is not connected yet, so this was saved only in your browser session.");
+          setPublicStatus("Preview mode only. Supabase is not connected yet, so this was not saved online.");
         }
 
-        selectedId = record.id;
         els.supportForm.reset();
         els.message.value = defaultMessage;
         els.consent.checked = true;
-        renderAdmin();
       } catch (error) {
         setPublicStatus(error.message || "Something went wrong.", true);
       }
@@ -760,140 +426,14 @@
       window.location.href = buildDraftLink(record);
     }
 
-    async function loadFromSupabase() {
-      if (!hasSupabaseConfig()) return;
-      try {
-        const data = await supabaseSelect();
-        if (Array.isArray(data) && data.length) {
-          messages = data;
-          selectedId = messages[0].id;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-      renderAdmin();
-    }
-
-    async function saveSelectedStatus(nextStatus) {
-      const selected = getSelected();
-      if (!selected) return;
-      selected.review_status = nextStatus;
-      selected.admin_notes = els.adminNotes.value.trim();
-      els.adminSaveStatus.textContent = hasSupabaseConfig() ? "Saving..." : "Preview mode only. Changes are not saved online.";
-      renderAdmin();
-      try {
-        if (hasSupabaseConfig()) {
-          await supabaseUpdate(selected.id, {
-            review_status: selected.review_status,
-            admin_notes: selected.admin_notes
-          });
-          els.adminSaveStatus.textContent = "Saved.";
-        }
-      } catch (error) {
-        els.adminSaveStatus.textContent = error.message || "Could not save.";
-      }
-    }
-
-    async function saveNotes() {
-      const selected = getSelected();
-      if (!selected) return;
-      selected.admin_notes = els.adminNotes.value.trim();
-      els.adminSaveStatus.textContent = hasSupabaseConfig() ? "Saving..." : "Preview mode only. Notes are not saved online.";
-      try {
-        if (hasSupabaseConfig()) {
-          await supabaseUpdate(selected.id, { admin_notes: selected.admin_notes });
-          els.adminSaveStatus.textContent = "Saved.";
-        }
-      } catch (error) {
-        els.adminSaveStatus.textContent = error.message || "Could not save notes.";
-      }
-    }
-
-    function openSelectedDraft() {
-      const selected = getSelected();
-      if (!selected) return;
-      window.location.href = buildDraftLink(selected);
-    }
-
     function init() {
       els.message.value = defaultMessage;
       renderRecipients(els.recipientListPublic, councilRecipients);
-      renderAdmin();
-
-      els.showPublicBtn.addEventListener("click", showPublic);
-      els.showAdminBtn.addEventListener("click", showAdmin);
       els.supportForm.addEventListener("submit", submitForm);
       els.previewDraftBtn.addEventListener("click", previewDraft);
-      els.searchInput.addEventListener("input", renderAdmin);
-      els.filterStatus.addEventListener("change", renderAdmin);
-      els.refreshBtn.addEventListener("click", loadFromSupabase);
-      els.markApprovedBtn.addEventListener("click", () => saveSelectedStatus("approved"));
-      els.markPendingBtn.addEventListener("click", () => saveSelectedStatus("pending"));
-      els.markRejectedBtn.addEventListener("click", () => saveSelectedStatus("rejected"));
-      els.saveNotesBtn.addEventListener("click", saveNotes);
-      els.draftFromAdminBtn.addEventListener("click", openSelectedDraft);
-
-      loadFromSupabase();
     }
 
     init();
   </script>
-
-  <!--
-  SUPABASE SQL
-
-  create extension if not exists pgcrypto;
-
-  create table if not exists support_messages (
-    id uuid primary key default gen_random_uuid(),
-    full_name text not null,
-    email text not null,
-    locality text not null,
-    message text not null,
-    consent boolean not null default false,
-    review_status text not null default 'pending' check (review_status in ('pending','approved','rejected')),
-    admin_notes text,
-    recipients jsonb not null,
-    created_at_client timestamptz,
-    created_at timestamptz not null default now()
-  );
-
-  alter table support_messages enable row level security;
-
-  create policy "public_insert_support_messages"
-  on support_messages
-  for insert
-  to anon, authenticated
-  with check (true);
-
-  create policy "authenticated_read_support_messages"
-  on support_messages
-  for select
-  to anon, authenticated
-  using (true);
-
-  create policy "authenticated_update_support_messages"
-  on support_messages
-  for update
-  to anon, authenticated
-  using (true)
-  with check (true);
-
-  HOW TO USE THIS HTML FILE
-
-  1) Save this as index.html
-  2) Double-click it to open in your browser
-  3) It works immediately in preview mode with demo data
-  4) To connect Supabase, paste your project URL and anon key into the two constants in the script block
-  5) Put this file into a GitHub repo as-is if you want a very simple static site
-
-  IMPORTANT
-  This keeps the safer workflow:
-  - supporter submits message
-  - you review it
-  - supporter sends the final email draft from their own account
-
-  It does not spoof the sender.
-  -->
 </body>
 </html>
