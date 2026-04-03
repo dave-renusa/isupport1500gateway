@@ -203,29 +203,29 @@
     let selectedId = null;
 
     const els = {
-      messageList:      document.getElementById("messageList"),
-      searchInput:      document.getElementById("searchInput"),
-      filterStatus:     document.getElementById("filterStatus"),
-      refreshBtn:       document.getElementById("refreshBtn"),
-      adminDetailEmpty: document.getElementById("adminDetailEmpty"),
-      adminDetail:      document.getElementById("adminDetail"),
-      detailName:       document.getElementById("detailName"),
-      detailLocality:   document.getElementById("detailLocality"),
-      detailEmail:      document.getElementById("detailEmail"),
-      detailStatus:     document.getElementById("detailStatus"),
-      detailMessage:    document.getElementById("detailMessage"),
-      adminNotes:       document.getElementById("adminNotes"),
-      adminSaveStatus:  document.getElementById("adminSaveStatus"),
-      markApprovedBtn:  document.getElementById("markApprovedBtn"),
-      markPendingBtn:   document.getElementById("markPendingBtn"),
-      markRejectedBtn:  document.getElementById("markRejectedBtn"),
-      sendEmailBtn:     document.getElementById("sendEmailBtn"),
-      sendStatus:       document.getElementById("sendStatus"),
+      messageList:        document.getElementById("messageList"),
+      searchInput:        document.getElementById("searchInput"),
+      filterStatus:       document.getElementById("filterStatus"),
+      refreshBtn:         document.getElementById("refreshBtn"),
+      adminDetailEmpty:   document.getElementById("adminDetailEmpty"),
+      adminDetail:        document.getElementById("adminDetail"),
+      detailName:         document.getElementById("detailName"),
+      detailLocality:     document.getElementById("detailLocality"),
+      detailEmail:        document.getElementById("detailEmail"),
+      detailStatus:       document.getElementById("detailStatus"),
+      detailMessage:      document.getElementById("detailMessage"),
+      adminNotes:         document.getElementById("adminNotes"),
+      adminSaveStatus:    document.getElementById("adminSaveStatus"),
+      markApprovedBtn:    document.getElementById("markApprovedBtn"),
+      markPendingBtn:     document.getElementById("markPendingBtn"),
+      markRejectedBtn:    document.getElementById("markRejectedBtn"),
+      sendEmailBtn:       document.getElementById("sendEmailBtn"),
+      sendStatus:         document.getElementById("sendStatus"),
       recipientListAdmin: document.getElementById("recipientListAdmin"),
-      countAll:         document.getElementById("countAll"),
-      countPending:     document.getElementById("countPending"),
-      countApproved:    document.getElementById("countApproved"),
-      countSent:        document.getElementById("countSent"),
+      countAll:           document.getElementById("countAll"),
+      countPending:       document.getElementById("countPending"),
+      countApproved:      document.getElementById("countApproved"),
+      countSent:          document.getElementById("countSent"),
     };
 
     // ── Supabase helpers ────────────────────────────────────────────────────
@@ -409,7 +409,6 @@
       const toEmails   = recipients.map(r => r.email).join(", ");
       const toNames    = recipients.map(r => r.name).join(", ");
 
-      // These template variables must match what you set up in EmailJS
       const templateParams = {
         to_email:           toEmails,
         to_name:            toNames,
@@ -436,25 +435,24 @@
     }
 
     // ── Init ────────────────────────────────────────────────────────────────
-   function init() {
-  initEmailJS();
+    function init() {
+      initEmailJS();
 
-  [
-    [els.searchInput,     "input",   renderAdmin],
-    [els.filterStatus,    "change",  renderAdmin],
-    [els.refreshBtn,      "click",   loadMessages],
-    [els.markApprovedBtn, "click",   () => saveStatus("approved")],
-    [els.markPendingBtn,  "click",   () => saveStatus("pending")],
-    [els.markRejectedBtn, "click",   () => saveStatus("rejected")],
-    [els.saveNotesBtn,    "click",   saveNotes],
-    [els.sendEmailBtn,    "click",   sendEmail],
-  ].forEach(([el, evt, fn]) => {
-    if (el) el.addEventListener(evt, fn);
-    else console.warn("Missing element for event:", evt, fn.name);
-  });
+      [
+        [els.searchInput,     "input",  renderAdmin],
+        [els.filterStatus,    "change", renderAdmin],
+        [els.refreshBtn,      "click",  loadMessages],
+        [els.markApprovedBtn, "click",  () => saveStatus("approved")],
+        [els.markPendingBtn,  "click",  () => saveStatus("pending")],
+        [els.markRejectedBtn, "click",  () => saveStatus("rejected")],
+        [els.saveNotesBtn,    "click",  saveNotes],
+        [els.sendEmailBtn,    "click",  sendEmail],
+      ].forEach(([el, evt, fn]) => {
+        if (el) el.addEventListener(evt, fn);
+        else console.warn("Missing element for event:", evt);
+      });
 
-  loadMessages();
-}
+      loadMessages();
     }
 
     // Poll until EmailJS is ready then init
