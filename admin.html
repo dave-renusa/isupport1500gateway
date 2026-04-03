@@ -6,25 +6,21 @@
   <title>1500 Gateway Admin Review</title>
   <style>
     :root {
-      --bg: #020617;
-      --panel-soft: rgba(255, 255, 255, 0.04);
-      --border: rgba(255, 255, 255, 0.10);
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #34d399;
+      --bg: #ffffff;
+      --panel-soft: #ffffff;
+      --border: rgba(15, 23, 42, 0.12);
+      --text: #0f172a;
+      --muted: #334155;
+      --accent: #059669;
       --radius: 24px;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
 
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(52, 211, 153, 0.14), transparent 22%),
-        radial-gradient(circle at left, rgba(20, 184, 166, 0.12), transparent 18%),
-        var(--bg);
+      background: var(--bg);
       color: var(--text);
     }
 
@@ -37,7 +33,7 @@
       z-index: 50;
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
-      background: rgba(2, 6, 23, 0.88);
+      background: rgba(255, 255, 255, 0.94);
     }
 
     .header-row {
@@ -45,28 +41,29 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      padding: 16px 0;
+      padding: 18px 0;
       flex-wrap: wrap;
     }
 
     .eyebrow {
-      font-size: 11px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.28em;
       color: var(--accent);
       margin-bottom: 6px;
+      font-weight: 700;
     }
 
-    .title { font-size: 20px; font-weight: 700; }
-    main { padding: 28px 0 56px; }
+    .title { font-size: 24px; font-weight: 800; }
+    main { padding: 36px 0 64px; }
 
     .grid-3, .admin-grid, .support-grid {
       display: grid;
-      gap: 18px;
+      gap: 20px;
     }
 
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
+    .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 32px; }
     .support-grid { grid-template-columns: 1fr 1fr; margin-top: 18px; }
 
     .card {
@@ -74,25 +71,26 @@
       background: var(--panel-soft);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 22px;
+      padding: 26px;
     }
 
-    .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); }
-    h2, h3 { margin: 10px 0 0; line-height: 1.15; }
-    h3 { font-size: 24px; }
-    .muted { color: var(--muted); line-height: 1.7; }
+    .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; }
+    h2, h3 { margin: 12px 0 0; line-height: 1.15; color: var(--text); }
+    h3 { font-size: 28px; }
+    .muted { color: var(--muted); line-height: 1.8; font-size: 17px; }
 
     .field, .textarea, .select {
       width: 100%;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: rgba(2, 6, 23, 0.72);
-      color: white;
-      padding: 14px 16px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 16px 18px;
       outline: none;
+      font-size: 17px;
     }
 
-    .field:focus, .textarea:focus, .select:focus { border-color: rgba(52, 211, 153, 0.65); }
+    .field:focus, .textarea:focus, .select:focus { border-color: rgba(5, 150, 105, 0.65); }
     .textarea { min-height: 160px; resize: vertical; }
 
     .btn, .btn-soft, .status-btn {
@@ -100,18 +98,19 @@
       cursor: pointer;
       border-radius: 16px;
       transition: 0.2s ease;
-      font-weight: 700;
-      padding: 14px 18px;
+      font-weight: 800;
+      padding: 16px 20px;
+      font-size: 16px;
     }
 
     .btn {
       background: var(--accent);
-      color: #052e27;
+      color: #ffffff;
     }
 
     .btn-soft, .status-btn {
       background: transparent;
-      color: white;
+      color: var(--text);
       border: 1px solid var(--border);
     }
 
@@ -129,11 +128,11 @@
     .recipient-box, .list-item, .message-box {
       border-radius: 20px;
       border: 1px solid var(--border);
-      background: rgba(2, 6, 23, 0.58);
+      background: #ffffff;
     }
 
-    .recipient-box, .list-item { padding: 16px; }
-    .message-box { padding: 18px; }
+    .recipient-box, .list-item { padding: 18px; }
+    .message-box { padding: 20px; }
 
     .list-scroll {
       margin-top: 18px;
@@ -150,8 +149,8 @@
     }
 
     .list-item.active {
-      border-color: rgba(52, 211, 153, 0.40);
-      background: rgba(52, 211, 153, 0.12);
+      border-color: rgba(5, 150, 105, 0.35);
+      background: rgba(5, 150, 105, 0.08);
     }
 
     .status-pill {
@@ -164,9 +163,9 @@
       border: 1px solid transparent;
     }
 
-    .pending { color: #fde68a; background: rgba(251, 191, 36, 0.10); border-color: rgba(251,191,36,0.25); }
-    .approved { color: #bbf7d0; background: rgba(52, 211, 153, 0.10); border-color: rgba(52,211,153,0.25); }
-    .rejected { color: #fecaca; background: rgba(248, 113, 113, 0.10); border-color: rgba(248,113,113,0.25); }
+    .pending { color: #92400e; background: rgba(251, 191, 36, 0.12); border-color: rgba(251,191,36,0.24); }
+    .approved { color: #065f46; background: rgba(5, 150, 105, 0.10); border-color: rgba(5,150,105,0.22); }
+    .rejected { color: #991b1b; background: rgba(220, 38, 38, 0.08); border-color: rgba(220,38,38,0.18); }
 
     .top-row {
       display: flex;
@@ -176,47 +175,10 @@
       flex-wrap: wrap;
     }
 
-    .strong { font-weight: 700; }
-    .small { font-size: 14px; }
-    .tiny { font-size: 12px; color: var(--muted); }
+    .strong { font-weight: 800; }
+    .small { font-size: 16px; }
+    .tiny { font-size: 13px; color: var(--muted); }
     .hidden { display: none !important; }
-
-    #passwordOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.96);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 24px;
-    }
-
-    .password-card {
-      width: 100%;
-      max-width: 460px;
-      border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.95);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: 28px;
-    }
-
-    .password-card h2 {
-      margin: 10px 0 0;
-      font-size: 30px;
-    }
-
-    .password-error {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(248, 113, 113, 0.25);
-      background: rgba(248, 113, 113, 0.10);
-      color: #fee2e2;
-      font-size: 14px;
-      display: none;
-    }
 
     @media (max-width: 960px) {
       .grid-3, .admin-grid, .support-grid { grid-template-columns: 1fr; }
@@ -224,141 +186,107 @@
   </style>
 </head>
 <body>
-  <div id="passwordOverlay">
-    <div class="password-card">
-      <div class="kicker">1500 Gateway</div>
-      <h2>Admin access</h2>
-      <p class="muted">Enter the password to review submissions.</p>
-
-      <label style="display:block; margin-top:18px;">
-        <span class="small strong">Password</span>
-        <input id="passwordInput" class="field" type="password" placeholder="Enter password" />
-      </label>
-
-      <div class="button-row">
-        <button id="unlockBtn" class="btn" type="button">Unlock</button>
+  <header>
+    <div class="wrap header-row">
+      <div>
+        <div class="eyebrow">1500 Gateway</div>
+        <div class="title">Admin review</div>
       </div>
-
-      <div id="passwordError" class="password-error">Wrong password.</div>
     </div>
-  </div>
+  </header>
 
-  <div id="adminApp" class="hidden">
-    <header>
-      <div class="wrap header-row">
-        <div>
-          <div class="eyebrow">1500 Gateway</div>
-          <div class="title">Admin review</div>
+  <main class="wrap">
+    <div class="grid-3">
+      <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
+      <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
+      <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
+    </div>
+
+    <div class="admin-grid">
+      <div class="card">
+        <div class="top-row">
+          <div>
+            <div class="kicker">Review queue</div>
+            <h3>Support messages</h3>
+          </div>
+          <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
         </div>
-      </div>
-    </header>
 
-    <main class="wrap">
-      <div class="grid-3">
-        <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
-        <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
-        <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
+        <div class="admin-toolbar">
+          <div class="search-wrap">
+            <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
+          </div>
+          <select class="select" id="filterStatus">
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div id="messageList" class="list-scroll"></div>
       </div>
 
-      <div class="admin-grid">
-        <div class="card">
+      <div class="card">
+        <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
+
+        <div id="adminDetail" class="hidden">
           <div class="top-row">
             <div>
-              <div class="kicker">Review queue</div>
-              <h3>Support messages</h3>
+              <div class="kicker">Message detail</div>
+              <h3 id="detailName"></h3>
+              <div class="muted small" id="detailLocality"></div>
+              <div class="small" style="color: var(--accent);" id="detailEmail"></div>
             </div>
-            <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
+            <div id="detailStatus" class="status-pill pending">pending</div>
           </div>
 
-          <div class="admin-toolbar">
-            <div class="search-wrap">
-              <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
-            </div>
-            <select class="select" id="filterStatus">
-              <option value="all">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+          <div class="button-row">
+            <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
+            <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
+            <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
           </div>
 
-          <div id="messageList" class="list-scroll"></div>
-        </div>
+          <div class="message-box" style="margin-top:18px;">
+            <div class="strong">Support message</div>
+            <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
+          </div>
 
-        <div class="card">
-          <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
-
-          <div id="adminDetail" class="hidden">
-            <div class="top-row">
-              <div>
-                <div class="kicker">Message detail</div>
-                <h3 id="detailName"></h3>
-                <div class="muted small" id="detailLocality"></div>
-                <div class="small" style="color: var(--accent);" id="detailEmail"></div>
+          <div class="support-grid">
+            <div>
+              <div class="strong">Admin notes</div>
+              <textarea id="adminNotes" class="textarea" style="margin-top:12px;" placeholder="Add internal notes here"></textarea>
+              <div class="button-row">
+                <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
+                <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
               </div>
-              <div id="detailStatus" class="status-pill pending">pending</div>
+              <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
             </div>
-
-            <div class="button-row">
-              <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
-              <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
-              <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
-            </div>
-
-            <div class="message-box" style="margin-top:18px;">
-              <div class="strong">Support message</div>
-              <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
-            </div>
-
-            <div class="support-grid">
-              <div>
-                <div class="strong">Admin notes</div>
-                <textarea id="adminNotes" class="textarea" style="margin-top:12px;" placeholder="Add internal notes here"></textarea>
-                <div class="button-row">
-                  <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
-                  <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
-                </div>
-                <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
-              </div>
-              <div>
-                <div class="strong">Recipients</div>
-                <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
-              </div>
+            <div>
+              <div class="strong">Recipients</div>
+              <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 
   <script>
-    const ADMIN_PASSWORD = "DaveIsTheBestCoder03";
-    const STORAGE_KEY = "gateway_admin_unlocked";
-
     const SUPABASE_URL = "https://csxvtewzlhigrzvpxtvf.supabase.co"; // paste your Supabase project URL here
     const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9"; // paste your Supabase anon key here
     const TABLE_NAME = "support_messages";
 
     const councilRecipients = [
-      { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
-      { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
-      { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
-      { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
-      { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
-      { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
-      { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" }
+      { name: "Dave", role: "RenUSA", email: "dave@renusa.org" },
+      { name: "Chad", role: "RenUSA", email: "chad@renusa.org" },
+      { name: "John", role: "RenUSA", email: "john@renusa.org" }
     ];
 
     let messages = [];
     let selectedId = null;
 
     const els = {
-      passwordOverlay: document.getElementById("passwordOverlay"),
-      passwordInput: document.getElementById("passwordInput"),
-      unlockBtn: document.getElementById("unlockBtn"),
-      passwordError: document.getElementById("passwordError"),
-      adminApp: document.getElementById("adminApp"),
-
       messageList: document.getElementById("messageList"),
       searchInput: document.getElementById("searchInput"),
       filterStatus: document.getElementById("filterStatus"),
@@ -383,22 +311,6 @@
       countApproved: document.getElementById("countApproved"),
       countRejected: document.getElementById("countRejected")
     };
-
-    function unlockAdmin() {
-      els.passwordOverlay.classList.add("hidden");
-      els.adminApp.classList.remove("hidden");
-      sessionStorage.setItem(STORAGE_KEY, "yes");
-      loadFromSupabase();
-    }
-
-    function checkPassword() {
-      if (els.passwordInput.value === ADMIN_PASSWORD) {
-        els.passwordError.style.display = "none";
-        unlockAdmin();
-      } else {
-        els.passwordError.style.display = "block";
-      }
-    }
 
     function hasSupabaseConfig() {
       return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
@@ -579,11 +491,6 @@
     }
 
     function init() {
-      els.unlockBtn.addEventListener("click", checkPassword);
-      els.passwordInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") checkPassword();
-      });
-
       els.searchInput.addEventListener("input", renderAdmin);
       els.filterStatus.addEventListener("change", renderAdmin);
       els.refreshBtn.addEventListener("click", loadFromSupabase);
@@ -592,10 +499,7 @@
       els.markRejectedBtn.addEventListener("click", () => saveSelectedStatus("rejected"));
       els.saveNotesBtn.addEventListener("click", saveNotes);
       els.draftFromAdminBtn.addEventListener("click", openSelectedDraft);
-
-      if (sessionStorage.getItem(STORAGE_KEY) === "yes") {
-        unlockAdmin();
-      }
+      loadFromSupabase();
     }
 
     init();
