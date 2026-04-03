@@ -6,25 +6,22 @@
   <title>1500 Gateway Support Portal</title>
   <style>
     :root {
-      --bg: #020617;
-      --panel: rgba(15, 23, 42, 0.85);
-      --panel-soft: rgba(255, 255, 255, 0.04);
-      --border: rgba(255, 255, 255, 0.10);
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #34d399;
+      --bg: #ffffff;
+      --panel: #f8fafc;
+      --panel-soft: #ffffff;
+      --border: rgba(15, 23, 42, 0.12);
+      --text: #0f172a;
+      --muted: #334155;
+      --accent: #059669;
       --radius: 24px;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(52, 211, 153, 0.14), transparent 22%),
-        radial-gradient(circle at left, rgba(20, 184, 166, 0.12), transparent 18%),
-        var(--bg);
+      background: var(--bg);
       color: var(--text);
     }
 
@@ -38,7 +35,7 @@
       z-index: 50;
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
-      background: rgba(2, 6, 23, 0.88);
+      background: rgba(255, 255, 255, 0.94);
     }
 
     .header-row {
@@ -46,63 +43,65 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      padding: 16px 0;
+      padding: 18px 0;
       flex-wrap: wrap;
     }
 
     .eyebrow {
-      font-size: 11px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.28em;
       color: var(--accent);
       margin-bottom: 6px;
+      font-weight: 700;
     }
 
-    .title { font-size: 20px; font-weight: 700; }
-    main { padding: 28px 0 56px; }
+    .title { font-size: 24px; font-weight: 800; }
+    main { padding: 36px 0 64px; }
 
     .hero {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
-      gap: 28px;
+      gap: 32px;
       align-items: start;
-      padding: 28px 0 16px;
+      padding: 30px 0 20px;
     }
 
     .badge {
       display: inline-block;
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(52, 211, 153, 0.25);
-      background: rgba(52, 211, 153, 0.10);
-      color: #bbf7d0;
-      font-size: 12px;
-      font-weight: 600;
+      border: 1px solid rgba(5, 150, 105, 0.22);
+      background: rgba(5, 150, 105, 0.08);
+      color: #065f46;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     h1 {
-      font-size: clamp(40px, 6vw, 68px);
+      font-size: clamp(48px, 7vw, 78px);
       line-height: 1.02;
-      margin: 18px 0 0;
+      margin: 20px 0 0;
       letter-spacing: -0.04em;
+      color: var(--text);
     }
 
     p.lead {
-      font-size: 18px;
+      font-size: 22px;
       line-height: 1.75;
       color: var(--muted);
-      max-width: 720px;
-      margin-top: 18px;
+      max-width: 760px;
+      margin-top: 20px;
     }
 
     .stats-grid, .support-grid, .grid-3 {
       display: grid;
-      gap: 18px;
+      gap: 20px;
     }
 
-    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; max-width: 760px; }
-    .support-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 22px; }
+    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; max-width: 820px; }
+    .support-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 32px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 24px; }
 
     .card, .panel {
       border: 1px solid var(--border);
@@ -112,18 +111,18 @@
     }
 
     .panel {
-      background: linear-gradient(180deg, rgba(52, 211, 153, 0.08), rgba(15, 23, 42, 0.85));
-      padding: 24px;
+      background: linear-gradient(180deg, rgba(5, 150, 105, 0.05), #ffffff);
+      padding: 28px;
     }
 
-    .card { padding: 22px; }
-    .stat-card, .mini-card { padding: 18px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
+    .card { padding: 26px; }
+    .stat-card, .mini-card { padding: 20px; border-radius: 20px; border: 1px solid var(--border); background: #ffffff; }
 
-    .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); }
-    h2, h3 { margin: 10px 0 0; line-height: 1.15; }
-    h2 { font-size: 34px; }
-    h3 { font-size: 24px; }
-    .muted { color: var(--muted); line-height: 1.7; }
+    .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; }
+    h2, h3 { margin: 12px 0 0; line-height: 1.15; color: var(--text); }
+    h2 { font-size: 40px; }
+    h3 { font-size: 28px; }
+    .muted { color: var(--muted); line-height: 1.8; font-size: 17px; }
 
     .form-grid {
       display: grid;
@@ -135,25 +134,26 @@
       width: 100%;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: rgba(2, 6, 23, 0.72);
-      color: white;
-      padding: 14px 16px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 16px 18px;
       outline: none;
+      font-size: 17px;
     }
 
-    .field:focus, .textarea:focus { border-color: rgba(52, 211, 153, 0.65); }
+    .field:focus, .textarea:focus { border-color: rgba(5, 150, 105, 0.65); }
     .textarea { min-height: 220px; resize: vertical; }
     label { display: block; }
-    .label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+    .label { display: block; margin-bottom: 10px; font-size: 16px; font-weight: 700; color: var(--text); }
 
     .consent {
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      padding: 16px;
+      padding: 18px;
       border-radius: 20px;
       border: 1px solid var(--border);
-      background: rgba(2, 6, 23, 0.56);
+      background: #f8fafc;
       margin-top: 16px;
     }
 
@@ -162,18 +162,19 @@
       cursor: pointer;
       border-radius: 16px;
       transition: 0.2s ease;
-      font-weight: 700;
-      padding: 14px 18px;
+      font-weight: 800;
+      padding: 16px 20px;
+      font-size: 16px;
     }
 
     .btn {
       background: var(--accent);
-      color: #052e27;
+      color: #ffffff;
     }
 
     .btn-soft {
       background: transparent;
-      color: white;
+      color: var(--text);
       border: 1px solid var(--border);
     }
 
@@ -183,41 +184,44 @@
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 18px;
+      margin-top: 20px;
     }
 
     .recipient-box {
       border-radius: 20px;
       border: 1px solid var(--border);
-      background: rgba(2, 6, 23, 0.58);
-      padding: 16px;
+      background: #ffffff;
+      padding: 18px;
     }
 
     .status-note {
       margin-top: 16px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       border-radius: 18px;
-      font-size: 14px;
-      border: 1px solid rgba(52, 211, 153, 0.20);
-      background: rgba(52, 211, 153, 0.10);
-      color: #d1fae5;
+      font-size: 15px;
+      border: 1px solid rgba(5, 150, 105, 0.20);
+      background: rgba(5, 150, 105, 0.08);
+      color: #065f46;
     }
 
     .status-note.error {
-      border-color: rgba(248, 113, 113, 0.25);
-      background: rgba(248, 113, 113, 0.10);
-      color: #fee2e2;
+      border-color: rgba(220, 38, 38, 0.18);
+      background: rgba(220, 38, 38, 0.08);
+      color: #991b1b;
     }
 
-    .strong { font-weight: 700; }
-    .small { font-size: 14px; }
-    .tiny { font-size: 12px; color: var(--muted); }
+    .strong { font-weight: 800; }
+    .small { font-size: 16px; }
+    .tiny { font-size: 13px; color: var(--muted); }
     .hidden { display: none !important; }
 
     @media (max-width: 960px) {
       .hero, .support-grid, .grid-3, .stats-grid { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 42px; }
+      h1 { font-size: 48px; }
+      h2 { font-size: 34px; }
+      h3 { font-size: 26px; }
+      p.lead { font-size: 20px; }
     }
   </style>
 </head>
@@ -238,7 +242,7 @@
           <div class="badge">Fredericksburg, Virginia</div>
           <h1>Built for people who want to support 1500 Gateway.</h1>
           <p class="lead">
-            A simple public page with a community-first tone. Supporters can add their names, where they are from, and a message for City Council. Messages go into review first.
+            A simple public page with a community-first tone. Supporters can add their names, where they are from, and a message for review. Messages go into review first.
           </p>
           <div class="stats-grid">
             <div class="stat-card"><div class="kicker">Simple form</div><h3>Name, email, locality, message</h3></div>
@@ -296,13 +300,13 @@
           <div class="grid-3">
             <div class="mini-card"><div class="strong">Editable message</div><div class="muted small">People can use the starter text or replace it with their own.</div></div>
             <div class="mini-card"><div class="strong">Review queue</div><div class="muted small">Every submission lands with a pending status so you can check it.</div></div>
-            <div class="mini-card"><div class="strong">Council-ready</div><div class="muted small">The draft email is already addressed to all seven Fredericksburg City Council members.</div></div>
+            <div class="mini-card"><div class="strong">Review-ready</div><div class="muted small">The draft email is already addressed to Dave, Chad, and John at RenUSA.</div></div>
           </div>
         </div>
 
         <div class="card">
           <div class="kicker">Recipients</div>
-          <h3>Fredericksburg City Council</h3>
+          <h3>RenUSA review team</h3>
           <div id="recipientListPublic" style="margin-top:16px; display:grid; gap:12px;"></div>
         </div>
       </div>
@@ -310,21 +314,17 @@
   </main>
 
   <script>
-    const SUPABASE_URL = ""; // paste your Supabase project URL here
-    const SUPABASE_ANON_KEY = ""; // paste your Supabase anon key here
+    const SUPABASE_URL = "https://csxvtewzlhigrzvpxtvf.supabase.co"; // paste your Supabase project URL here
+    const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9"; // paste your Supabase anon key here
     const TABLE_NAME = "support_messages";
 
     const councilRecipients = [
-      { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
-      { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
-      { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
-      { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
-      { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
-      { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
-      { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" }
+      { name: "Dave", role: "RenUSA", email: "dave@renusa.org" },
+      { name: "Chad", role: "RenUSA", email: "chad@renusa.org" },
+      { name: "John", role: "RenUSA", email: "john@renusa.org" }
     ];
 
-    const defaultMessage = `Dear Mayor Devine and Members of City Council,\n\nI am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.\n\nI believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.\n\nPlease include my comments in the public record as a statement of support for the project.\n\nThank you for your time and consideration.`;
+    const defaultMessage = `Dear Dave, Chad, and John,\n\nI am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.\n\nI believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.\n\nPlease consider this note as part of the supporter review process.\n\nThank you.`;
 
     const els = {
       supportForm: document.getElementById("supportForm"),
