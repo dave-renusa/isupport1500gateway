@@ -1,409 +1,419 @@
-"use client";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1500 Gateway Support Portal</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.85);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #34d399;
+      --accent-dark: #052e27;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --radius: 24px;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
 
-import { useEffect, useMemo, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { CheckCircle2, Clock3, Mail, MessageSquare, Search, Shield, XCircle } from "lucide-react";
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(52, 211, 153, 0.14), transparent 22%),
+        radial-gradient(circle at left, rgba(20, 184, 166, 0.12), transparent 18%),
+        var(--bg);
+      color: var(--text);
+    }
 
-type ReviewStatus = "pending" | "approved" | "rejected";
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
 
-type SupportMessage = {
-  id: string;
-  full_name: string;
-  email: string;
-  locality: string;
-  message: string;
-  consent: boolean;
-  review_status: ReviewStatus;
-  admin_notes: string | null;
-  recipients: { name: string; role: string; email: string }[];
-  created_at_client?: string | null;
-  created_at?: string | null;
-};
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
 
-const councilRecipients = [
-  { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
-  { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
-  { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
-  { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
-  { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
-  { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
-  { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" },
-];
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(2, 6, 23, 0.88);
+    }
 
-const defaultMessage = `Dear Mayor Devine and Members of City Council,
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      flex-wrap: wrap;
+    }
 
-I am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
 
-I believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.
+    .title { font-size: 20px; font-weight: 700; }
 
-Please include my comments in the public record as a statement of support for the project.
+    .toggle-group {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 4px;
+      background: var(--panel-soft);
+      gap: 4px;
+    }
 
-Thank you for your time and consideration.`;
+    .toggle-btn, .btn, .btn-soft, .status-btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 16px;
+      transition: 0.2s ease;
+    }
 
-const demoData: SupportMessage[] = [
-  {
-    id: "1",
-    full_name: "Jane Smith",
-    email: "jane@example.com",
-    locality: "Fredericksburg, VA",
-    message: "I support the 1500 Gateway project because I believe it can bring long-term tax revenue and support city services while being handled responsibly.",
-    consent: true,
-    review_status: "pending",
-    admin_notes: null,
-    recipients: councilRecipients,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    full_name: "Marcus Allen",
-    email: "marcus@example.com",
-    locality: "Spotsylvania County, VA",
-    message: "Please consider my support for the project. I think economic development matters, and I appreciate the need for strong construction and safety commitments.",
-    consent: true,
-    review_status: "approved",
-    admin_notes: "Solid note. Ready for supporter follow-up.",
-    recipients: councilRecipients,
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-  },
-];
+    .toggle-btn {
+      background: transparent;
+      color: var(--text);
+      padding: 10px 16px;
+      font-weight: 600;
+    }
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anonKey) return null;
-  return createClient(url, anonKey);
-}
+    .toggle-btn.active {
+      background: var(--accent);
+      color: #06281f;
+    }
 
-export default function GatewaySupportApp() {
-  const [view, setView] = useState<"public" | "admin">("public");
+    main { padding: 28px 0 56px; }
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-          <div>
-            <div className="text-xs uppercase tracking-[0.28em] text-emerald-300">1500 Gateway</div>
-            <div className="text-lg font-semibold">Community support site + review dashboard</div>
-          </div>
-          <div className="flex gap-2 rounded-2xl border border-white/10 bg-white/5 p-1">
-            <button
-              onClick={() => setView("public")}
-              className={`rounded-xl px-4 py-2 text-sm font-medium ${view === "public" ? "bg-emerald-400 text-slate-950" : "text-slate-200"}`}
-            >
-              Public page
-            </button>
-            <button
-              onClick={() => setView("admin")}
-              className={`rounded-xl px-4 py-2 text-sm font-medium ${view === "admin" ? "bg-emerald-400 text-slate-950" : "text-slate-200"}`}
-            >
-              Admin review
-            </button>
-          </div>
-        </div>
-      </header>
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: start;
+      padding: 28px 0 16px;
+    }
 
-      {view === "public" ? <PublicPage /> : <AdminPage />}
+    .badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      background: rgba(52, 211, 153, 0.10);
+      color: #bbf7d0;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(40px, 6vw, 68px);
+      line-height: 1.02;
+      margin: 18px 0 0;
+      letter-spacing: -0.04em;
+    }
+
+    p.lead {
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 720px;
+      margin-top: 18px;
+    }
+
+    .grid-3, .stats-grid, .support-grid, .admin-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; max-width: 760px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 22px; }
+    .support-grid, .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 28px; }
+
+    .card, .panel {
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(52, 211, 153, 0.08), rgba(15, 23, 42, 0.85));
+      padding: 24px;
+    }
+
+    .card { padding: 22px; }
+    .stat-card, .mini-card { padding: 18px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
+
+    .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); }
+    h2, h3 { margin: 10px 0 0; line-height: 1.15; }
+    h2 { font-size: 34px; }
+    h3 { font-size: 24px; }
+    .muted { color: var(--muted); line-height: 1.7; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field, .textarea, .select {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.72);
+      color: white;
+      padding: 14px 16px;
+      outline: none;
+    }
+
+    .field:focus, .textarea:focus, .select:focus { border-color: rgba(52, 211, 153, 0.65); }
+    .textarea { min-height: 220px; resize: vertical; }
+    label { display: block; }
+    .label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+
+    .consent {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.56);
+      margin-top: 16px;
+    }
+
+    .btn {
+      padding: 14px 18px;
+      background: var(--accent);
+      color: #052e27;
+      font-weight: 700;
+    }
+
+    .btn:hover, .toggle-btn:hover, .status-btn:hover { transform: translateY(-1px); }
+
+    .btn-soft, .status-btn {
+      padding: 14px 18px;
+      background: transparent;
+      color: white;
+      border: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .message-box, .list-item, .recipient-box {
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.58);
+    }
+
+    .message-box { padding: 18px; }
+    .recipient-box, .list-item { padding: 16px; }
+
+    .status-note {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      border: 1px solid rgba(52, 211, 153, 0.20);
+      background: rgba(52, 211, 153, 0.10);
+      color: #d1fae5;
+    }
+
+    .status-note.error {
+      border-color: rgba(248, 113, 113, 0.25);
+      background: rgba(248, 113, 113, 0.10);
+      color: #fee2e2;
+    }
+
+    .admin-toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .search-wrap { flex: 1; min-width: 220px; }
+
+    .list-scroll {
+      margin-top: 18px;
+      max-height: 650px;
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+      padding-right: 4px;
+    }
+
+    .list-item {
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .list-item.active {
+      border-color: rgba(52, 211, 153, 0.40);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+      border: 1px solid transparent;
+    }
+
+    .pending { color: #fde68a; background: rgba(251, 191, 36, 0.10); border-color: rgba(251,191,36,0.25); }
+    .approved { color: #bbf7d0; background: rgba(52, 211, 153, 0.10); border-color: rgba(52,211,153,0.25); }
+    .rejected { color: #fecaca; background: rgba(248, 113, 113, 0.10); border-color: rgba(248,113,113,0.25); }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .small { font-size: 14px; }
+    .tiny { font-size: 12px; color: var(--muted); }
+    .strong { font-weight: 700; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 960px) {
+      .hero, .support-grid, .admin-grid, .grid-3, .stats-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-row">
+      <div>
+        <div class="eyebrow">1500 Gateway</div>
+        <div class="title">Community support site + review dashboard</div>
+      </div>
+      <div class="toggle-group">
+        <button id="showPublicBtn" class="toggle-btn active" type="button">Public page</button>
+        <button id="showAdminBtn" class="toggle-btn" type="button">Admin review</button>
+      </div>
     </div>
-  );
-}
+  </header>
 
-function PublicPage() {
-  const recipientList = useMemo(() => councilRecipients.map((r) => r.email).join(","), []);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    locality: "",
-    message: defaultMessage,
-    consent: true,
-  });
-  const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
-  const [statusMessage, setStatusMessage] = useState("");
-
-  function handleChange(
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const { name, value, type } = event.target;
-    const checked = type === "checkbox" && "checked" in event.target ? event.target.checked : false;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("saving");
-    setStatusMessage("Saving your message for review...");
-
-    try {
-      const supabase = getSupabase();
-      const payload = {
-        full_name: formData.fullName.trim(),
-        email: formData.email.trim(),
-        locality: formData.locality.trim(),
-        message: formData.message.trim(),
-        consent: formData.consent,
-        review_status: "pending",
-        admin_notes: null,
-        recipients: councilRecipients,
-        created_at_client: new Date().toISOString(),
-      };
-
-      if (supabase) {
-        const { error } = await supabase.from("support_messages").insert(payload);
-        if (error) throw error;
-      }
-
-      setStatus("success");
-      setStatusMessage(
-        supabase
-          ? "Thanks. Your message has been submitted for review."
-          : "Preview mode: Supabase is not connected yet, so nothing was saved."
-      );
-      setFormData({
-        fullName: "",
-        email: "",
-        locality: "",
-        message: defaultMessage,
-        consent: true,
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Something went wrong.";
-      setStatus("error");
-      setStatusMessage(message);
-    }
-  }
-
-  const draftMailto = `mailto:${recipientList}?subject=${encodeURIComponent(
-    "Support for 1500 Gateway"
-  )}&body=${encodeURIComponent(
-    `${formData.message}\n\nSincerely,\n${formData.fullName || "[Your Name]"}\n${formData.locality || "[Town/City/County]"}\n${formData.email || "[Email Address]"}`
-  )}`;
-
-  return (
-    <main>
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(52,211,153,0.18),transparent_28%),radial-gradient(circle_at_left,rgba(20,184,166,0.16),transparent_22%)]" />
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
-          <div className="relative z-10">
-            <div className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">
-              Fredericksburg, Virginia
-            </div>
-            <h1 className="max-w-2xl text-4xl font-bold tracking-tight md:text-6xl">
-              Built for people who want to support 1500 Gateway.
-            </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-300 md:text-lg">
-              A simple public page with a community-first tone. Supporters can add their names, where they are from, and a message for City Council. Messages go into review first.
-            </p>
-            <div className="mt-8 grid max-w-xl gap-4 sm:grid-cols-3">
-              <StatCard icon={<MessageSquare className="h-5 w-5" />} label="Simple form" value="Name, email, locality, message" />
-              <StatCard icon={<Shield className="h-5 w-5" />} label="Review flow" value="Saved as pending" />
-              <StatCard icon={<Mail className="h-5 w-5" />} label="Outreach" value="Supporter sends final email" />
-            </div>
-          </div>
-
-          <div className="relative z-10 rounded-[2rem] border border-emerald-400/20 bg-emerald-400/5 p-6 shadow-xl shadow-emerald-900/10">
-            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Support form</div>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">Share your support</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-              This page stores messages for review. It does not send as the supporter automatically. No funny business. Cleaner that way.
-            </p>
-
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Full name" name="fullName" placeholder="Jane Smith" value={formData.fullName} onChange={handleChange} />
-                <Field label="Email address" name="email" placeholder="jane@example.com" type="email" value={formData.email} onChange={handleChange} />
-              </div>
-              <Field label="Town / city / county" name="locality" placeholder="Fredericksburg, VA" value={formData.locality} onChange={handleChange} />
-              <label className="block">
-                <span className="mb-2 block text-sm font-medium text-slate-200">Support message</span>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={11}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
-                />
-              </label>
-              <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-300">
-                <input
-                  type="checkbox"
-                  name="consent"
-                  checked={formData.consent}
-                  onChange={handleChange}
-                  className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-950"
-                />
-                <span>
-                  I understand my message will be submitted for review and coordination. Any later outreach should preserve my meaning and clearly reflect how it is being sent.
-                </span>
-              </label>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="submit"
-                  disabled={status === "saving"}
-                  className="rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {status === "saving" ? "Saving..." : "Submit for review"}
-                </button>
-                <a href={draftMailto} className="rounded-2xl border border-white/15 px-5 py-3 text-sm font-semibold text-white hover:bg-white/5">
-                  Preview personal email draft
-                </a>
-              </div>
-
-              {statusMessage ? (
-                <div
-                  className={`rounded-2xl border p-4 text-sm ${
-                    status === "error"
-                      ? "border-red-400/30 bg-red-400/10 text-red-100"
-                      : "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
-                  }`}
-                >
-                  {statusMessage}
-                </div>
-              ) : null}
-            </form>
+  <main class="wrap">
+    <section id="publicView">
+      <div class="hero">
+        <div>
+          <div class="badge">Fredericksburg, Virginia</div>
+          <h1>Built for people who want to support 1500 Gateway.</h1>
+          <p class="lead">
+            A simple public page with a community-first tone. Supporters can add their names, where they are from, and a message for City Council. Messages go into review first.
+          </p>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="kicker">Simple form</div><h3>Name, email, locality, message</h3></div>
+            <div class="stat-card"><div class="kicker">Review flow</div><h3>Saved as pending</h3></div>
+            <div class="stat-card"><div class="kicker">Outreach</div><h3>Supporter sends final email</h3></div>
           </div>
         </div>
-      </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
-          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
-            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Why this setup works</div>
-            <h3 className="mt-2 text-2xl font-semibold">Built for public support, not public headaches</h3>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <FeatureBox title="Editable message" body="People can use the starter text or replace it with their own. Nothing is locked down." />
-              <FeatureBox title="Review queue" body="Every submission lands with a pending status so you can check it before any next step." />
-              <FeatureBox title="Council-ready" body="The draft email is already addressed to all seven Fredericksburg City Council members." />
-              <FeatureBox title="Image-ready" body="The page is laid out so we can drop in renderings, maps, and graphics later without redoing the whole thing." />
-            </div>
-          </div>
+        <div class="panel">
+          <div class="kicker">Support form</div>
+          <h2>Share your support</h2>
+          <p class="muted">This page stores messages for review. It does not send as the supporter automatically. Cleaner and safer that way.</p>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
-            <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Recipients</div>
-            <h3 className="mt-2 text-2xl font-semibold">Fredericksburg City Council</h3>
-            <div className="mt-5 space-y-3">
-              {councilRecipients.map((recipient) => (
-                <div key={recipient.email} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
-                  <div className="font-semibold text-white">{recipient.name}</div>
-                  <div className="text-sm text-slate-400">{recipient.role}</div>
-                  <a href={`mailto:${recipient.email}`} className="mt-1 block text-sm text-emerald-300 hover:text-emerald-200">
-                    {recipient.email}
-                  </a>
-                </div>
-              ))}
+          <form id="supportForm">
+            <div class="form-grid">
+              <label>
+                <span class="label">Full name</span>
+                <input class="field" id="fullName" required placeholder="Jane Smith" />
+              </label>
+              <label>
+                <span class="label">Email address</span>
+                <input class="field" id="email" required type="email" placeholder="jane@example.com" />
+              </label>
             </div>
-          </div>
+
+            <label style="margin-top:16px; display:block;">
+              <span class="label">Town / city / county</span>
+              <input class="field" id="locality" required placeholder="Fredericksburg, VA" />
+            </label>
+
+            <label style="margin-top:16px; display:block;">
+              <span class="label">Support message</span>
+              <textarea class="textarea" id="message"></textarea>
+            </label>
+
+            <label class="consent">
+              <input id="consent" type="checkbox" checked />
+              <span class="small">I understand my message will be submitted for review and coordination. Any later outreach should preserve my meaning and clearly reflect how it is being sent.</span>
+            </label>
+
+            <div class="button-row">
+              <button class="btn" type="submit">Submit for review</button>
+              <button class="btn-soft" id="previewDraftBtn" type="button">Preview personal email draft</button>
+            </div>
+
+            <div id="publicStatus" class="status-note hidden"></div>
+          </form>
         </div>
-      </section>
-    </main>
-  );
-}
-
-function AdminPage() {
-  const supabase = getSupabase();
-  const [items, setItems] = useState<SupportMessage[]>(demoData);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | ReviewStatus>("all");
-  const [selected, setSelected] = useState<SupportMessage | null>(demoData[0]);
-  const [saveStatus, setSaveStatus] = useState("");
-
-  async function loadMessages() {
-    if (!supabase) return;
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("support_messages")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && data) {
-      const typed = data as SupportMessage[];
-      setItems(typed);
-      setSelected((current) => typed.find((item) => item.id === current?.id) || typed[0] || null);
-    }
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    loadMessages();
-  }, []);
-
-  const filteredItems = items.filter((item) => {
-    const matchesFilter = filter === "all" ? true : item.review_status === filter;
-    const haystack = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
-    const matchesSearch = haystack.includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  async function updateMessage(updates: Partial<SupportMessage>) {
-    if (!selected) return;
-    const next = { ...selected, ...updates };
-    setSelected(next);
-    setItems((current) => current.map((item) => (item.id === next.id ? next : item)));
-    setSaveStatus("Saving...");
-
-    if (!supabase) {
-      setSaveStatus("Preview mode only. Connect Supabase to save changes.");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("support_messages")
-      .update({
-        review_status: next.review_status,
-        admin_notes: next.admin_notes,
-      })
-      .eq("id", next.id);
-
-    setSaveStatus(error ? error.message : "Saved.");
-  }
-
-  const counts = {
-    all: items.length,
-    pending: items.filter((item) => item.review_status === "pending").length,
-    approved: items.filter((item) => item.review_status === "approved").length,
-    rejected: items.filter((item) => item.review_status === "rejected").length,
-  };
-
-  return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <DashboardStat label="Total submissions" value={String(counts.all)} icon={<MessageSquare className="h-5 w-5" />} />
-        <DashboardStat label="Pending" value={String(counts.pending)} icon={<Clock3 className="h-5 w-5" />} />
-        <DashboardStat label="Approved" value={String(counts.approved)} icon={<CheckCircle2 className="h-5 w-5" />} />
-        <DashboardStat label="Rejected" value={String(counts.rejected)} icon={<XCircle className="h-5 w-5" />} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[0.95fr,1.05fr]">
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+      <div class="support-grid">
+        <div class="card">
+          <div class="kicker">Why this setup works</div>
+          <h3>Built for public support, not public headaches</h3>
+          <div class="grid-3">
+            <div class="mini-card"><div class="strong">Editable message</div><div class="muted small">People can use the starter text or replace it with their own.</div></div>
+            <div class="mini-card"><div class="strong">Review queue</div><div class="muted small">Every submission lands with a pending status so you can check it.</div></div>
+            <div class="mini-card"><div class="strong">Council-ready</div><div class="muted small">The draft email is already addressed to all seven Fredericksburg City Council members.</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="kicker">Recipients</div>
+          <h3>Fredericksburg City Council</h3>
+          <div id="recipientListPublic" style="margin-top:16px; display:grid; gap:12px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="adminView" class="hidden">
+      <div class="grid-3">
+        <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
+        <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
+        <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="card">
+          <div class="top-row">
             <div>
-              <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Review queue</div>
-              <h2 className="mt-2 text-2xl font-semibold">Support messages</h2>
+              <div class="kicker">Review queue</div>
+              <h3>Support messages</h3>
             </div>
-            <button onClick={loadMessages} className="rounded-2xl border border-white/15 px-4 py-2 text-sm font-medium text-white hover:bg-white/5">
-              {loading ? "Refreshing..." : "Refresh"}
-            </button>
+            <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-3">
-            <label className="relative flex-1 min-w-[220px]">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, email, place, message"
-                className="w-full rounded-2xl border border-white/10 bg-slate-900 px-10 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
-              />
-            </label>
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as "all" | ReviewStatus)}
-              className="rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none focus:border-emerald-400/60"
-            >
+          <div class="admin-toolbar">
+            <div class="search-wrap">
+              <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
+            </div>
+            <select class="select" id="filterStatus">
               <option value="all">All statuses</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
@@ -411,278 +421,365 @@ function AdminPage() {
             </select>
           </div>
 
-          <div className="mt-5 space-y-3 max-h-[650px] overflow-auto pr-1">
-            {filteredItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSelected(item)}
-                className={`w-full rounded-2xl border p-4 text-left transition ${selected?.id === item.id ? "border-emerald-400/40 bg-emerald-400/10" : "border-white/10 bg-slate-900/60 hover:bg-white/5"}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="font-semibold text-white">{item.full_name}</div>
-                    <div className="text-sm text-slate-400">{item.locality}</div>
-                    <div className="mt-1 text-sm text-emerald-300">{item.email}</div>
-                  </div>
-                  <StatusBadge status={item.review_status} />
-                </div>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{item.message}</p>
-              </button>
-            ))}
-            {filteredItems.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-400">
-                No messages found.
-              </div>
-            ) : null}
-          </div>
+          <div id="messageList" class="list-scroll"></div>
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
-          {selected ? (
-            <AdminDetailCard selected={selected} saveStatus={saveStatus} onUpdate={updateMessage} />
-          ) : (
-            <div className="flex min-h-[300px] items-center justify-center rounded-2xl border border-dashed border-white/10 text-slate-400">
-              Select a message to review.
+        <div class="card">
+          <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
+
+          <div id="adminDetail" class="hidden">
+            <div class="top-row">
+              <div>
+                <div class="kicker">Message detail</div>
+                <h3 id="detailName"></h3>
+                <div class="muted small" id="detailLocality"></div>
+                <div class="small" style="color: var(--accent);" id="detailEmail"></div>
+              </div>
+              <div id="detailStatus" class="status-pill pending">pending</div>
             </div>
-          )}
-        </div>
-      </div>
-    </main>
-  );
-}
 
-function AdminDetailCard({
-  selected,
-  saveStatus,
-  onUpdate,
-}: {
-  selected: SupportMessage;
-  saveStatus: string;
-  onUpdate: (updates: Partial<SupportMessage>) => void;
-}) {
-  const [notes, setNotes] = useState(selected.admin_notes || "");
+            <div class="button-row">
+              <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
+              <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
+              <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
+            </div>
 
-  useEffect(() => {
-    setNotes(selected.admin_notes || "");
-  }, [selected.id]);
+            <div class="message-box" style="margin-top:18px;">
+              <div class="strong">Support message</div>
+              <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
+            </div>
 
-  const recipientList = selected.recipients.map((r) => r.email).join(",");
-  const draftLink = `mailto:${recipientList}?subject=${encodeURIComponent(
-    "Support for 1500 Gateway"
-  )}&body=${encodeURIComponent(
-    `${selected.message}\n\nSincerely,\n${selected.full_name}\n${selected.locality}\n${selected.email}`
-  )}`;
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Message detail</div>
-          <h2 className="mt-2 text-2xl font-semibold">{selected.full_name}</h2>
-          <div className="mt-2 text-sm text-slate-400">{selected.locality}</div>
-          <div className="text-sm text-emerald-300">{selected.email}</div>
-        </div>
-        <StatusBadge status={selected.review_status} />
-      </div>
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <ActionButton label="Mark approved" onClick={() => onUpdate({ review_status: "approved", admin_notes: notes })} />
-        <ActionButton label="Mark pending" onClick={() => onUpdate({ review_status: "pending", admin_notes: notes })} />
-        <ActionButton label="Mark rejected" onClick={() => onUpdate({ review_status: "rejected", admin_notes: notes })} />
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-        <div className="text-sm font-semibold text-white">Support message</div>
-        <div className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">{selected.message}</div>
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,0.95fr]">
-        <div>
-          <div className="text-sm font-semibold text-white">Admin notes</div>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={7}
-            className="mt-3 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
-            placeholder="Add internal notes here"
-          />
-          <div className="mt-3 flex flex-wrap gap-3">
-            <button
-              onClick={() => onUpdate({ admin_notes: notes })}
-              className="rounded-2xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950"
-            >
-              Save notes
-            </button>
-            <a href={draftLink} className="rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/5">
-              Open supporter email draft
-            </a>
-          </div>
-          {saveStatus ? <div className="mt-3 text-sm text-slate-400">{saveStatus}</div> : null}
-        </div>
-
-        <div>
-          <div className="text-sm font-semibold text-white">Recipients</div>
-          <div className="mt-3 space-y-3">
-            {selected.recipients.map((recipient) => (
-              <div key={recipient.email} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
-                <div className="font-medium text-white">{recipient.name}</div>
-                <div className="text-sm text-slate-400">{recipient.role}</div>
-                <div className="text-sm text-emerald-300">{recipient.email}</div>
+            <div class="support-grid" style="margin-top:18px;">
+              <div>
+                <div class="strong">Admin notes</div>
+                <textarea id="adminNotes" class="textarea" style="min-height:160px; margin-top:12px;" placeholder="Add internal notes here"></textarea>
+                <div class="button-row">
+                  <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
+                  <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
+                </div>
+                <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
               </div>
-            ))}
+              <div>
+                <div class="strong">Recipients</div>
+                <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    </section>
+  </main>
 
-function Field({
-  label,
-  name,
-  placeholder,
-  value,
-  type = "text",
-  onChange,
-}: {
-  label: string;
-  name: string;
-  placeholder: string;
-  value: string;
-  type?: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-200">{label}</span>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-400/60"
-        required
-      />
-    </label>
-  );
-}
+  <script>
+    const SUPABASE_URL = ""; // paste your Supabase project URL here
+    const SUPABASE_ANON_KEY = ""; // paste your Supabase anon key here
+    const TABLE_NAME = "support_messages";
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="flex items-center gap-2 text-emerald-300">{icon}<span className="text-xs uppercase tracking-[0.2em]">{label}</span></div>
-      <div className="mt-2 text-sm font-semibold text-white">{value}</div>
-    </div>
-  );
-}
+    const councilRecipients = [
+      { name: "Kerry P. Devine", role: "Mayor (At-Large)", email: "kpdevine@fredericksburgva.gov" },
+      { name: "Charlie L. Frye, Jr.", role: "Vice-Mayor (Ward 4)", email: "clfrye@fredericksburgva.gov" },
+      { name: "Matt D. Rowe", role: "Council Member (Ward 1)", email: "mrowe@fredericksburgva.gov" },
+      { name: "Joy Y. Crump", role: "Council Member (Ward 2)", email: "jcrump@fredericksburgva.gov" },
+      { name: "Susanna R. Finn", role: "Council Member (Ward 3)", email: "sfinn@fredericksburgva.gov" },
+      { name: "Jannan W. Holmes", role: "Council Member (At-Large)", email: "jwholmes@fredericksburgva.gov" },
+      { name: "Will B. Mackintosh", role: "Council Member (At-Large)", email: "wbmackintosh@fredericksburgva.gov" }
+    ];
 
-function FeatureBox({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
-      <div className="font-semibold text-white">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-slate-300">{body}</div>
-    </div>
-  );
-}
+    const defaultMessage = `Dear Mayor Devine and Members of City Council,\n\nI am writing to share my support for the proposed 1500 Gateway project in Fredericksburg.\n\nI believe this project represents an opportunity to strengthen the City’s tax base, support jobs, and help Fredericksburg plan for long-term economic growth. I also appreciate the importance of public safety, construction management, and responsible communication with nearby residents.\n\nPlease include my comments in the public record as a statement of support for the project.\n\nThank you for your time and consideration.`;
 
-function DashboardStat({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-  return (
-    <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5">
-      <div className="flex items-center gap-2 text-emerald-300">{icon}<span className="text-xs uppercase tracking-[0.2em]">{label}</span></div>
-      <div className="mt-3 text-3xl font-bold text-white">{value}</div>
-    </div>
-  );
-}
+    let messages = [
+      {
+        id: crypto.randomUUID(),
+        full_name: "Jane Smith",
+        email: "jane@example.com",
+        locality: "Fredericksburg, VA",
+        message: "I support the 1500 Gateway project because I believe it can bring long-term tax revenue and support city services while being handled responsibly.",
+        consent: true,
+        review_status: "pending",
+        admin_notes: "",
+        recipients: councilRecipients,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: crypto.randomUUID(),
+        full_name: "Marcus Allen",
+        email: "marcus@example.com",
+        locality: "Spotsylvania County, VA",
+        message: "Please consider my support for the project. I think economic development matters, and I appreciate the need for strong construction and safety commitments.",
+        consent: true,
+        review_status: "approved",
+        admin_notes: "Solid note. Ready for supporter follow-up.",
+        recipients: councilRecipients,
+        created_at: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
 
-function StatusBadge({ status }: { status: ReviewStatus }) {
-  const styles = {
-    pending: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-    approved: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-    rejected: "border-red-400/30 bg-red-400/10 text-red-200",
-  };
+    let selectedId = messages[0]?.id || null;
 
-  return <div className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${styles[status]}`}>{status}</div>;
-}
+    const els = {
+      publicView: document.getElementById("publicView"),
+      adminView: document.getElementById("adminView"),
+      showPublicBtn: document.getElementById("showPublicBtn"),
+      showAdminBtn: document.getElementById("showAdminBtn"),
+      supportForm: document.getElementById("supportForm"),
+      fullName: document.getElementById("fullName"),
+      email: document.getElementById("email"),
+      locality: document.getElementById("locality"),
+      message: document.getElementById("message"),
+      consent: document.getElementById("consent"),
+      publicStatus: document.getElementById("publicStatus"),
+      previewDraftBtn: document.getElementById("previewDraftBtn"),
+      recipientListPublic: document.getElementById("recipientListPublic"),
+      recipientListAdmin: document.getElementById("recipientListAdmin"),
+      messageList: document.getElementById("messageList"),
+      searchInput: document.getElementById("searchInput"),
+      filterStatus: document.getElementById("filterStatus"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      adminDetailEmpty: document.getElementById("adminDetailEmpty"),
+      adminDetail: document.getElementById("adminDetail"),
+      detailName: document.getElementById("detailName"),
+      detailLocality: document.getElementById("detailLocality"),
+      detailEmail: document.getElementById("detailEmail"),
+      detailStatus: document.getElementById("detailStatus"),
+      detailMessage: document.getElementById("detailMessage"),
+      adminNotes: document.getElementById("adminNotes"),
+      adminSaveStatus: document.getElementById("adminSaveStatus"),
+      markApprovedBtn: document.getElementById("markApprovedBtn"),
+      markPendingBtn: document.getElementById("markPendingBtn"),
+      markRejectedBtn: document.getElementById("markRejectedBtn"),
+      saveNotesBtn: document.getElementById("saveNotesBtn"),
+      draftFromAdminBtn: document.getElementById("draftFromAdminBtn"),
+      countAll: document.getElementById("countAll"),
+      countPending: document.getElementById("countPending"),
+      countApproved: document.getElementById("countApproved"),
+      countRejected: document.getElementById("countRejected")
+    };
 
-function ActionButton({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button onClick={onClick} className="rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/5">
-      {label}
-    </button>
-  );
-}
+    function hasSupabaseConfig() {
+      return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+    }
 
-/*
-PROJECT FILES TO CREATE IN A REAL NEXT.JS APP
+    function headers() {
+      return {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+      };
+    }
 
-app/page.tsx
-- Use the PublicPage component
+    async function supabaseInsert(payload) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
+        method: "POST",
+        headers: { ...headers(), Prefer: "return=representation" },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error(await response.text());
+      return response.json();
+    }
 
-app/admin/page.tsx
-- Use the AdminPage component
-- Protect it with auth or middleware
+    async function supabaseSelect() {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
+        method: "GET",
+        headers: headers()
+      });
+      if (!response.ok) throw new Error(await response.text());
+      return response.json();
+    }
 
-lib/supabase.ts
-import { createClient } from '@supabase/supabase-js'
-export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    async function supabaseUpdate(id, payload) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`, {
+        method: "PATCH",
+        headers: headers(),
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error(await response.text());
+    }
 
-middleware.ts
-- Protect /admin with basic auth, Clerk, or Supabase Auth
+    function renderRecipients(target, recipients) {
+      target.innerHTML = recipients.map((recipient) => `
+        <div class="recipient-box">
+          <div class="strong">${recipient.name}</div>
+          <div class="tiny">${recipient.role}</div>
+          <div class="small" style="color: var(--accent); margin-top: 6px;">${recipient.email}</div>
+        </div>
+      `).join("");
+    }
 
-OPTIONAL API ROUTE
-app/api/send-approved/route.ts
-- Only use for a clearly labeled org-sent message
-- Better path: generate supporter draft and let them send it themselves
+    function setPublicStatus(message, isError = false) {
+      els.publicStatus.textContent = message;
+      els.publicStatus.classList.remove("hidden", "error");
+      if (isError) els.publicStatus.classList.add("error");
+    }
 
-SUPABASE SQL
-create extension if not exists pgcrypto;
+    function showPublic() {
+      els.publicView.classList.remove("hidden");
+      els.adminView.classList.add("hidden");
+      els.showPublicBtn.classList.add("active");
+      els.showAdminBtn.classList.remove("active");
+    }
 
-create table if not exists support_messages (
-  id uuid primary key default gen_random_uuid(),
-  full_name text not null,
-  email text not null,
-  locality text not null,
-  message text not null,
-  consent boolean not null default false,
-  review_status text not null default 'pending' check (review_status in ('pending','approved','rejected')),
-  admin_notes text,
-  recipients jsonb not null,
-  created_at_client timestamptz,
-  created_at timestamptz not null default now()
-);
+    function showAdmin() {
+      els.adminView.classList.remove("hidden");
+      els.publicView.classList.add("hidden");
+      els.showAdminBtn.classList.add("active");
+      els.showPublicBtn.classList.remove("active");
+      renderAdmin();
+    }
 
-alter table support_messages enable row level security;
+    function buildDraftLink(record) {
+      const emails = councilRecipients.map((r) => r.email).join(",");
+      const body = `${record.message}\n\nSincerely,\n${record.full_name || "[Your Name]"}\n${record.locality || "[Town/City/County]"}\n${record.email || "[Email Address]"}`;
+      return `mailto:${emails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
+    }
 
-create policy "public_insert_support_messages"
-on support_messages
-for insert
-to anon, authenticated
-with check (true);
+    function getSelected() {
+      return messages.find((m) => m.id === selectedId) || null;
+    }
 
-create policy "authenticated_read_support_messages"
-on support_messages
-for select
-to authenticated
-using (true);
+    function statusClass(status) {
+      return status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending";
+    }
 
-create policy "authenticated_update_support_messages"
-on support_messages
-for update
-to authenticated
-using (true)
-with check (true);
+    function updateCounts() {
+      const pending = messages.filter((m) => m.review_status === "pending").length;
+      const approved = messages.filter((m) => m.review_status === "approved").length;
+      const rejected = messages.filter((m) => m.review_status === "rejected").length;
+      els.countAll.textContent = String(messages.length);
+      els.countPending.textContent = String(pending);
+      els.countApproved.textContent = String(approved);
+      els.countRejected.textContent = String(rejected);
+    }
 
-PACKAGES
-npm install @supabase/supabase-js lucide-react
+    function renderAdmin() {
+      updateCounts();
 
-ENV
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+      const search = els.searchInput.value.trim().toLowerCase();
+      const filter = els.filterStatus.value;
+      const filtered = messages.filter((item) => {
+        const matchesFilter = filter === "all" || item.review_status === filter;
+        const hay = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
+        const matchesSearch = !search || hay.includes(search);
+        return matchesFilter && matchesSearch;
+      });
 
-NOTES
-- This canvas version combines the public page and admin page in one file so it previews cleanly.
-- In the real project, split them into separate files.
-- Right now it falls back to demo data when Supabase is not connected.
-- Add images later without changing the flow.
-*/
+      els.messageList.innerHTML = filtered.length ? filtered.map((item) => `
+        <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
+          <div class="top-row">
+            <div>
+              <div class="strong">${item.full_name}</div>
+              <div class="tiny">${item.locality}</div>
+              <div class="small" style="color: var(--accent); margin-top: 6px;">${item.email}</div>
+            </div>
+            <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
+          </div>
+          <div class="muted small" style="margin-top: 12px;">${escapeHtml(item.message).slice(0, 170)}${item.message.length > 170 ? "..." : ""}</div>
+        </div>
+      `).join("") : `<div class="recipient-box muted">No messages found.</div>`;
+
+      document.querySelectorAll(".list-item[data-id]").forEach((node) => {
+        node.addEventListener("click", () => {
+          selectedId = node.getAttribute("data-id");
+          renderAdmin();
+        });
+      });
+
+      const selected = getSelected();
+      if (!selected) {
+        els.adminDetailEmpty.classList.remove("hidden");
+        els.adminDetail.classList.add("hidden");
+        return;
+      }
+
+      els.adminDetailEmpty.classList.add("hidden");
+      els.adminDetail.classList.remove("hidden");
+      els.detailName.textContent = selected.full_name;
+      els.detailLocality.textContent = selected.locality;
+      els.detailEmail.textContent = selected.email;
+      els.detailMessage.textContent = selected.message;
+      els.detailStatus.textContent = selected.review_status;
+      els.detailStatus.className = `status-pill ${statusClass(selected.review_status)}`;
+      els.adminNotes.value = selected.admin_notes || "";
+      renderRecipients(els.recipientListAdmin, selected.recipients || councilRecipients);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function submitForm(event) {
+      event.preventDefault();
+      setPublicStatus("Saving your message for review...");
+
+      const record = {
+        id: crypto.randomUUID(),
+        full_name: els.fullName.value.trim(),
+        email: els.email.value.trim(),
+        locality: els.locality.value.trim(),
+        message: els.message.value.trim(),
+        consent: els.consent.checked,
+        review_status: "pending",
+        admin_notes: "",
+        recipients: councilRecipients,
+        created_at_client: new Date().toISOString(),
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        if (hasSupabaseConfig()) {
+          const inserted = await supabaseInsert(record);
+          if (Array.isArray(inserted) && inserted[0]) {
+            messages.unshift(inserted[0]);
+          } else {
+            messages.unshift(record);
+          }
+          setPublicStatus("Thanks. Your message has been submitted for review.");
+        } else {
+          messages.unshift(record);
+          setPublicStatus("Preview mode only. Supabase is not connected yet, so this was saved only in your browser session.");
+        }
+
+        selectedId = record.id;
+        els.supportForm.reset();
+        els.message.value = defaultMessage;
+        els.consent.checked = true;
+        renderAdmin();
+      } catch (error) {
+        setPublicStatus(error.message || "Something went wrong.", true);
+      }
+    }
+
+    function previewDraft() {
+      const record = {
+        full_name: els.fullName.value.trim(),
+        email: els.email.value.trim(),
+        locality: els.locality.value.trim(),
+        message: els.message.value.trim() || defaultMessage
+      };
+      window.location.href = buildDraftLink(record);
+    }
+
+    async function loadFromSupabase() {
+      if (!hasSupabaseConfig()) return;
+      try {
+        const data = await supabaseSelect();
+        if (Array.isArray(data) && data.length) {
+          messages = data;
+          selectedId = messages[0].id;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      renderAdmin();
+    }
+
+    async function saveSelectedStatus(nextStatus) {
+      const selected = getSelected();
+      if (!selected) return;
+      selected.review_status = nextStatus;
+      selected.admin_notes = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = hasSupabaseConfig() ? "Saving..." : "Preview mode only. Changes are not saved online.";
+      renderAdmin();
+      try {
+        if (hasSupabaseConfig()) {
