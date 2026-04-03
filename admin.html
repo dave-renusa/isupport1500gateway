@@ -15,171 +15,54 @@
       --radius: 24px;
       --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
-
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
     button, input, textarea, select { font: inherit; }
     .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.94);
-    }
-
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 0;
-      flex-wrap: wrap;
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.28em;
-      color: var(--accent);
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
+    header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(255,255,255,0.94); }
+    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; flex-wrap: wrap; }
+    .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
     .title { font-size: 24px; font-weight: 800; }
     main { padding: 36px 0 64px; }
-
-    .grid-3, .admin-grid, .support-grid {
-      display: grid;
-      gap: 20px;
-    }
-
+    .grid-3, .admin-grid, .support-grid { display: grid; gap: 20px; }
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 32px; }
     .support-grid { grid-template-columns: 1fr 1fr; margin-top: 18px; }
-
-    .card {
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 26px;
-    }
-
+    .card { border: 1px solid var(--border); background: var(--panel-soft); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; }
     .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; }
     h2, h3 { margin: 12px 0 0; line-height: 1.15; color: var(--text); }
     h3 { font-size: 28px; }
     .muted { color: var(--muted); line-height: 1.8; font-size: 17px; }
-
-    .field, .textarea, .select {
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      color: var(--text);
-      padding: 16px 18px;
-      outline: none;
-      font-size: 17px;
-    }
-
-    .field:focus, .textarea:focus, .select:focus { border-color: rgba(5, 150, 105, 0.65); }
+    .field, .textarea, .select { width: 100%; border-radius: 18px; border: 1px solid var(--border); background: #ffffff; color: var(--text); padding: 16px 18px; outline: none; font-size: 17px; }
+    .field:focus, .textarea:focus, .select:focus { border-color: rgba(5,150,105,0.65); }
     .textarea { min-height: 160px; resize: vertical; }
-
-    .btn, .btn-soft, .status-btn {
-      border: 0;
-      cursor: pointer;
-      border-radius: 16px;
-      transition: 0.2s ease;
-      font-weight: 800;
-      padding: 16px 20px;
-      font-size: 16px;
-    }
-
-    .btn {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    .btn-soft, .status-btn {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn:hover, .btn-soft:hover, .status-btn:hover { transform: translateY(-1px); }
-
-    .button-row, .admin-toolbar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
+    .btn, .btn-soft, .btn-send, .status-btn { border: 0; cursor: pointer; border-radius: 16px; transition: 0.2s ease; font-weight: 800; padding: 16px 20px; font-size: 16px; }
+    .btn { background: var(--accent); color: #ffffff; }
+    .btn-soft, .status-btn { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-send { background: #0f172a; color: #ffffff; }
+    .btn:hover, .btn-soft:hover, .status-btn:hover, .btn-send:hover { transform: translateY(-1px); }
+    .btn:disabled, .btn-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .button-row, .admin-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
     .search-wrap { flex: 1; min-width: 220px; }
-
-    .recipient-box, .list-item, .message-box {
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-    }
-
+    .recipient-box, .list-item, .message-box { border-radius: 20px; border: 1px solid var(--border); background: #ffffff; }
     .recipient-box, .list-item { padding: 18px; }
     .message-box { padding: 20px; }
-
-    .list-scroll {
-      margin-top: 18px;
-      max-height: 650px;
-      overflow: auto;
-      display: grid;
-      gap: 12px;
-      padding-right: 4px;
-    }
-
-    .list-item {
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .list-item.active {
-      border-color: rgba(5, 150, 105, 0.35);
-      background: rgba(5, 150, 105, 0.08);
-    }
-
-    .status-pill {
-      display: inline-block;
-      padding: 7px 11px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: capitalize;
-      border: 1px solid transparent;
-    }
-
-    .pending { color: #92400e; background: rgba(251, 191, 36, 0.12); border-color: rgba(251,191,36,0.24); }
-    .approved { color: #065f46; background: rgba(5, 150, 105, 0.10); border-color: rgba(5,150,105,0.22); }
-    .rejected { color: #991b1b; background: rgba(220, 38, 38, 0.08); border-color: rgba(220,38,38,0.18); }
-
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-      flex-wrap: wrap;
-    }
-
+    .list-scroll { margin-top: 18px; max-height: 650px; overflow: auto; display: grid; gap: 12px; padding-right: 4px; }
+    .list-item { cursor: pointer; text-align: left; }
+    .list-item.active { border-color: rgba(5,150,105,0.35); background: rgba(5,150,105,0.08); }
+    .status-pill { display: inline-block; padding: 7px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: capitalize; border: 1px solid transparent; }
+    .pending  { color: #92400e; background: rgba(251,191,36,0.12);  border-color: rgba(251,191,36,0.24); }
+    .approved { color: #065f46; background: rgba(5,150,105,0.10);   border-color: rgba(5,150,105,0.22); }
+    .rejected { color: #991b1b; background: rgba(220,38,38,0.08);   border-color: rgba(220,38,38,0.18); }
+    .sent     { color: #1e40af; background: rgba(59,130,246,0.08);  border-color: rgba(59,130,246,0.22); }
+    .top-row { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
     .strong { font-weight: 800; }
     .small { font-size: 16px; }
     .tiny { font-size: 13px; color: var(--muted); }
     .hidden { display: none !important; }
-
+    .send-banner { margin-top: 18px; padding: 16px 18px; border-radius: 18px; font-size: 15px; border: 1px solid rgba(5,150,105,0.20); background: rgba(5,150,105,0.08); color: #065f46; }
+    .send-banner.error { border-color: rgba(220,38,38,0.18); background: rgba(220,38,38,0.08); color: #991b1b; }
+    .send-banner.info  { border-color: rgba(59,130,246,0.20); background: rgba(59,130,246,0.08); color: #1e40af; }
     @media (max-width: 960px) {
       .grid-3, .admin-grid, .support-grid { grid-template-columns: 1fr; }
     }
@@ -199,10 +82,11 @@
     <div class="grid-3">
       <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
       <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
-      <div class="card"><div class="kicker">Approved / Rejected</div><h3><span id="countApproved">0</span> / <span id="countRejected">0</span></h3></div>
+      <div class="card"><div class="kicker">Approved / Sent</div><h3><span id="countApproved">0</span> / <span id="countSent">0</span></h3></div>
     </div>
 
     <div class="admin-grid">
+      <!-- Left: message list -->
       <div class="card">
         <div class="top-row">
           <div>
@@ -211,7 +95,6 @@
           </div>
           <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
         </div>
-
         <div class="admin-toolbar">
           <div class="search-wrap">
             <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
@@ -220,13 +103,14 @@
             <option value="all">All statuses</option>
             <option value="pending">Pending</option>
             <option value="approved">Approved</option>
+            <option value="sent">Sent</option>
             <option value="rejected">Rejected</option>
           </select>
         </div>
-
         <div id="messageList" class="list-scroll"></div>
       </div>
 
+      <!-- Right: detail panel -->
       <div class="card">
         <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
 
@@ -241,24 +125,38 @@
             <div id="detailStatus" class="status-pill pending">pending</div>
           </div>
 
+          <!-- Status buttons -->
           <div class="button-row">
             <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
             <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
             <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
           </div>
 
+          <!-- Message body -->
           <div class="message-box" style="margin-top:18px;">
             <div class="strong">Support message</div>
             <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
           </div>
 
+          <!-- Send email section -->
+          <div style="margin-top: 18px; padding: 20px; border-radius: 20px; border: 1px solid var(--border); background: #f8fafc;">
+            <div class="strong">Send email on behalf of supporter</div>
+            <div class="muted small" style="margin-top: 8px;">
+              Email will be sent from <code>gateway-support@mail.renusa.org</code> with Reply-To set to the supporter's address. Recipient hits reply and it goes directly to them.
+            </div>
+            <div class="button-row">
+              <button class="btn-send" type="button" id="sendEmailBtn">Send email now</button>
+            </div>
+            <div id="sendStatus" class="send-banner hidden"></div>
+          </div>
+
+          <!-- Notes + recipients -->
           <div class="support-grid">
             <div>
               <div class="strong">Admin notes</div>
               <textarea id="adminNotes" class="textarea" style="margin-top:12px;" placeholder="Add internal notes here"></textarea>
               <div class="button-row">
                 <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
-                <button class="btn-soft" type="button" id="draftFromAdminBtn">Open supporter email draft</button>
               </div>
               <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
             </div>
@@ -273,107 +171,116 @@
   </main>
 
   <script>
-    const SUPABASE_URL = "https://csxvtewzlhigrzvpxtvf.supabase.co"; // paste your Supabase project URL here
-    const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9"; // paste your Supabase anon key here
-    const TABLE_NAME = "support_messages";
+    const SUPABASE_URL     = "https://csxvtewzlhigrzvpxtvf.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9";
+    const TABLE_NAME       = "support_messages";
+
+    // Replace with your deployed Cloudflare Worker URL after setup
+    // Example: "https://gateway-mailer.yourname.workers.dev"
+    const WORKER_URL = "YOUR_WORKER_URL_HERE";
 
     const councilRecipients = [
-      { name: "Dave", role: "RenUSA", email: "dave@renusa.org" },
-      { name: "Chad", role: "RenUSA", email: "chad@renusa.org" },
-      { name: "John", role: "RenUSA", email: "john@renusa.org" }
+      { name: "Dave",  role: "RenUSA", email: "dave@renusa.org" },
+      { name: "Chad",  role: "RenUSA", email: "chad@renusa.org" },
+      { name: "John",  role: "RenUSA", email: "john@renusa.org" }
     ];
 
-    let messages = [];
-    let selectedId = null;
+    let messages    = [];
+    let selectedId  = null;
 
     const els = {
-      messageList: document.getElementById("messageList"),
-      searchInput: document.getElementById("searchInput"),
-      filterStatus: document.getElementById("filterStatus"),
-      refreshBtn: document.getElementById("refreshBtn"),
-      adminDetailEmpty: document.getElementById("adminDetailEmpty"),
-      adminDetail: document.getElementById("adminDetail"),
-      detailName: document.getElementById("detailName"),
-      detailLocality: document.getElementById("detailLocality"),
-      detailEmail: document.getElementById("detailEmail"),
-      detailStatus: document.getElementById("detailStatus"),
-      detailMessage: document.getElementById("detailMessage"),
-      adminNotes: document.getElementById("adminNotes"),
-      adminSaveStatus: document.getElementById("adminSaveStatus"),
-      markApprovedBtn: document.getElementById("markApprovedBtn"),
-      markPendingBtn: document.getElementById("markPendingBtn"),
-      markRejectedBtn: document.getElementById("markRejectedBtn"),
-      saveNotesBtn: document.getElementById("saveNotesBtn"),
-      draftFromAdminBtn: document.getElementById("draftFromAdminBtn"),
+      messageList:       document.getElementById("messageList"),
+      searchInput:       document.getElementById("searchInput"),
+      filterStatus:      document.getElementById("filterStatus"),
+      refreshBtn:        document.getElementById("refreshBtn"),
+      adminDetailEmpty:  document.getElementById("adminDetailEmpty"),
+      adminDetail:       document.getElementById("adminDetail"),
+      detailName:        document.getElementById("detailName"),
+      detailLocality:    document.getElementById("detailLocality"),
+      detailEmail:       document.getElementById("detailEmail"),
+      detailStatus:      document.getElementById("detailStatus"),
+      detailMessage:     document.getElementById("detailMessage"),
+      adminNotes:        document.getElementById("adminNotes"),
+      adminSaveStatus:   document.getElementById("adminSaveStatus"),
+      markApprovedBtn:   document.getElementById("markApprovedBtn"),
+      markPendingBtn:    document.getElementById("markPendingBtn"),
+      markRejectedBtn:   document.getElementById("markRejectedBtn"),
+      sendEmailBtn:      document.getElementById("sendEmailBtn"),
+      sendStatus:        document.getElementById("sendStatus"),
       recipientListAdmin: document.getElementById("recipientListAdmin"),
-      countAll: document.getElementById("countAll"),
-      countPending: document.getElementById("countPending"),
-      countApproved: document.getElementById("countApproved"),
-      countRejected: document.getElementById("countRejected")
+      countAll:          document.getElementById("countAll"),
+      countPending:      document.getElementById("countPending"),
+      countApproved:     document.getElementById("countApproved"),
+      countSent:         document.getElementById("countSent"),
     };
 
-    function hasSupabaseConfig() {
-      return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-    }
-
-    function headers() {
+    function sbHeaders() {
       return {
         "Content-Type": "application/json",
         apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
       };
     }
 
-    async function supabaseSelect() {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
-        method: "GET",
-        headers: headers()
-      });
-      if (!response.ok) throw new Error(await response.text());
-      return response.json();
+    async function sbSelect() {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`,
+        { headers: sbHeaders() }
+      );
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
     }
 
-    async function supabaseUpdate(id, payload) {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`, {
-        method: "PATCH",
-        headers: headers(),
-        body: JSON.stringify(payload)
-      });
-      if (!response.ok) throw new Error(await response.text());
+    async function sbUpdate(id, payload) {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`,
+        { method: "PATCH", headers: sbHeaders(), body: JSON.stringify(payload) }
+      );
+      if (!res.ok) throw new Error(await res.text());
+    }
+
+    function getSelected() {
+      return messages.find(m => m.id === selectedId) || null;
+    }
+
+    function statusClass(s) {
+      return s === "approved" ? "approved"
+           : s === "rejected" ? "rejected"
+           : s === "sent"     ? "sent"
+           : "pending";
+    }
+
+    function escapeHtml(t) {
+      const d = document.createElement("div");
+      d.textContent = t;
+      return d.innerHTML;
+    }
+
+    function updateCounts() {
+      const pending  = messages.filter(m => m.review_status === "pending").length;
+      const approved = messages.filter(m => m.review_status === "approved").length;
+      const sent     = messages.filter(m => m.review_status === "sent").length;
+      els.countAll.textContent      = String(messages.length);
+      els.countPending.textContent  = String(pending);
+      els.countApproved.textContent = String(approved);
+      els.countSent.textContent     = String(sent);
     }
 
     function renderRecipients(target, recipients) {
-      target.innerHTML = recipients.map((recipient) => `
+      target.innerHTML = recipients.map(r => `
         <div class="recipient-box">
-          <div class="strong">${recipient.name}</div>
-          <div class="tiny">${recipient.role}</div>
-          <div class="small" style="color: var(--accent); margin-top: 6px;">${recipient.email}</div>
+          <div class="strong">${r.name}</div>
+          <div class="tiny">${r.role}</div>
+          <div class="small" style="color: var(--accent); margin-top: 6px;">${r.email}</div>
         </div>
       `).join("");
     }
 
-    function getSelected() {
-      return messages.find((m) => m.id === selectedId) || null;
-    }
-
-    function statusClass(status) {
-      return status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending";
-    }
-
-    function updateCounts() {
-      const pending = messages.filter((m) => m.review_status === "pending").length;
-      const approved = messages.filter((m) => m.review_status === "approved").length;
-      const rejected = messages.filter((m) => m.review_status === "rejected").length;
-      els.countAll.textContent = String(messages.length);
-      els.countPending.textContent = String(pending);
-      els.countApproved.textContent = String(approved);
-      els.countRejected.textContent = String(rejected);
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+    function setSendStatus(msg, type = "ok") {
+      els.sendStatus.textContent = msg;
+      els.sendStatus.className = "send-banner";
+      if (type === "error") els.sendStatus.classList.add("error");
+      if (type === "info")  els.sendStatus.classList.add("info");
     }
 
     function renderAdmin() {
@@ -381,30 +288,33 @@
 
       const search = els.searchInput.value.trim().toLowerCase();
       const filter = els.filterStatus.value;
-      const filtered = messages.filter((item) => {
-        const matchesFilter = filter === "all" || item.review_status === filter;
+
+      const filtered = messages.filter(item => {
+        const matchFilter = filter === "all" || item.review_status === filter;
         const hay = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
-        const matchesSearch = !search || hay.includes(search);
-        return matchesFilter && matchesSearch;
+        return matchFilter && (!search || hay.includes(search));
       });
 
-      els.messageList.innerHTML = filtered.length ? filtered.map((item) => `
-        <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:start; flex-wrap:wrap;">
-            <div>
-              <div class="strong">${item.full_name}</div>
-              <div class="tiny">${item.locality}</div>
-              <div class="small" style="color: var(--accent); margin-top: 6px;">${item.email}</div>
+      els.messageList.innerHTML = filtered.length
+        ? filtered.map(item => `
+            <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
+              <div style="display:flex; justify-content:space-between; gap:12px; align-items:start; flex-wrap:wrap;">
+                <div>
+                  <div class="strong">${escapeHtml(item.full_name)}</div>
+                  <div class="tiny">${escapeHtml(item.locality)}</div>
+                  <div class="small" style="color: var(--accent); margin-top: 6px;">${escapeHtml(item.email)}</div>
+                </div>
+                <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
+              </div>
+              <div class="muted small" style="margin-top: 12px;">${escapeHtml(item.message).slice(0, 170)}${item.message.length > 170 ? "..." : ""}</div>
             </div>
-            <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
-          </div>
-          <div class="muted small" style="margin-top: 12px;">${escapeHtml(item.message).slice(0, 170)}${item.message.length > 170 ? "..." : ""}</div>
-        </div>
-      `).join("") : `<div class="recipient-box muted">No messages found.</div>`;
+          `).join("")
+        : `<div class="recipient-box muted">No messages found.</div>`;
 
-      document.querySelectorAll(".list-item[data-id]").forEach((node) => {
+      document.querySelectorAll(".list-item[data-id]").forEach(node => {
         node.addEventListener("click", () => {
           selectedId = node.getAttribute("data-id");
+          els.sendStatus.classList.add("hidden");
           renderAdmin();
         });
       });
@@ -418,50 +328,45 @@
 
       els.adminDetailEmpty.classList.add("hidden");
       els.adminDetail.classList.remove("hidden");
-      els.detailName.textContent = selected.full_name;
+      els.detailName.textContent     = selected.full_name;
       els.detailLocality.textContent = selected.locality;
-      els.detailEmail.textContent = selected.email;
-      els.detailMessage.textContent = selected.message;
-      els.detailStatus.textContent = selected.review_status;
-      els.detailStatus.className = `status-pill ${statusClass(selected.review_status)}`;
-      els.adminNotes.value = selected.admin_notes || "";
+      els.detailEmail.textContent    = selected.email;
+      els.detailMessage.textContent  = selected.message;
+      els.detailStatus.textContent   = selected.review_status;
+      els.detailStatus.className     = `status-pill ${statusClass(selected.review_status)}`;
+      els.adminNotes.value           = selected.admin_notes || "";
+
+      // Disable send button if already sent or rejected
+      const isSent     = selected.review_status === "sent";
+      const isRejected = selected.review_status === "rejected";
+      els.sendEmailBtn.disabled = isSent || isRejected;
+      els.sendEmailBtn.textContent = isSent ? "Already sent" : "Send email now";
+
       renderRecipients(els.recipientListAdmin, selected.recipients || councilRecipients);
     }
 
-    async function loadFromSupabase() {
-      if (!hasSupabaseConfig()) {
-        els.messageList.innerHTML = `<div class="recipient-box muted">Add your Supabase URL and anon key in this file to load submissions.</div>`;
-        return;
-      }
-
+    async function loadMessages() {
       try {
-        messages = await supabaseSelect();
-        selectedId = messages[0] ? messages[0].id : null;
-        els.adminSaveStatus.textContent = "";
-      } catch (error) {
-        els.messageList.innerHTML = `<div class="recipient-box muted">Could not load submissions. Check your Supabase settings.</div>`;
-        console.error(error);
+        messages   = await sbSelect();
+        selectedId = messages[0]?.id || null;
+      } catch (err) {
+        els.messageList.innerHTML = `<div class="recipient-box muted">Could not load submissions: ${err.message}</div>`;
       }
-
       renderAdmin();
     }
 
-    async function saveSelectedStatus(nextStatus) {
+    async function saveStatus(nextStatus) {
       const selected = getSelected();
       if (!selected) return;
       selected.review_status = nextStatus;
-      selected.admin_notes = els.adminNotes.value.trim();
+      selected.admin_notes   = els.adminNotes.value.trim();
       els.adminSaveStatus.textContent = "Saving...";
       renderAdmin();
-
       try {
-        await supabaseUpdate(selected.id, {
-          review_status: selected.review_status,
-          admin_notes: selected.admin_notes
-        });
+        await sbUpdate(selected.id, { review_status: nextStatus, admin_notes: selected.admin_notes });
         els.adminSaveStatus.textContent = "Saved.";
-      } catch (error) {
-        els.adminSaveStatus.textContent = error.message || "Could not save.";
+      } catch (err) {
+        els.adminSaveStatus.textContent = err.message || "Could not save.";
       }
     }
 
@@ -471,35 +376,66 @@
       selected.admin_notes = els.adminNotes.value.trim();
       els.adminSaveStatus.textContent = "Saving...";
       try {
-        await supabaseUpdate(selected.id, { admin_notes: selected.admin_notes });
+        await sbUpdate(selected.id, { admin_notes: selected.admin_notes });
         els.adminSaveStatus.textContent = "Saved.";
-      } catch (error) {
-        els.adminSaveStatus.textContent = error.message || "Could not save notes.";
+      } catch (err) {
+        els.adminSaveStatus.textContent = err.message || "Could not save.";
       }
     }
 
-    function buildDraftLink(record) {
-      const emails = councilRecipients.map((r) => r.email).join(",");
-      const body = `${record.message}\n\nSincerely,\n${record.full_name}\n${record.locality}\n${record.email}`;
-      return `mailto:${emails}?subject=${encodeURIComponent("Support for 1500 Gateway")}&body=${encodeURIComponent(body)}`;
-    }
-
-    function openSelectedDraft() {
+    async function sendEmail() {
       const selected = getSelected();
       if (!selected) return;
-      window.location.href = buildDraftLink(selected);
+
+      if (WORKER_URL === "YOUR_WORKER_URL_HERE") {
+        setSendStatus("Worker URL not configured yet. See setup instructions.", "error");
+        els.sendStatus.classList.remove("hidden");
+        return;
+      }
+
+      els.sendEmailBtn.disabled = true;
+      setSendStatus("Sending...", "info");
+      els.sendStatus.classList.remove("hidden");
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            supporter_name:     selected.full_name,
+            supporter_email:    selected.email,
+            supporter_locality: selected.locality,
+            message:            selected.message,
+            recipients:         selected.recipients || councilRecipients,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Send failed");
+
+        // Mark as sent in Supabase
+        selected.review_status = "sent";
+        await sbUpdate(selected.id, { review_status: "sent" });
+
+        setSendStatus(`Sent successfully. Email ID: ${data.id}`, "ok");
+        renderAdmin();
+      } catch (err) {
+        setSendStatus(err.message || "Failed to send.", "error");
+        els.sendEmailBtn.disabled = false;
+      }
     }
 
     function init() {
-      els.searchInput.addEventListener("input", renderAdmin);
+      els.searchInput.addEventListener("input",  renderAdmin);
       els.filterStatus.addEventListener("change", renderAdmin);
-      els.refreshBtn.addEventListener("click", loadFromSupabase);
-      els.markApprovedBtn.addEventListener("click", () => saveSelectedStatus("approved"));
-      els.markPendingBtn.addEventListener("click", () => saveSelectedStatus("pending"));
-      els.markRejectedBtn.addEventListener("click", () => saveSelectedStatus("rejected"));
-      els.saveNotesBtn.addEventListener("click", saveNotes);
-      els.draftFromAdminBtn.addEventListener("click", openSelectedDraft);
-      loadFromSupabase();
+      els.refreshBtn.addEventListener("click",    loadMessages);
+      els.markApprovedBtn.addEventListener("click", () => saveStatus("approved"));
+      els.markPendingBtn.addEventListener("click",  () => saveStatus("pending"));
+      els.markRejectedBtn.addEventListener("click", () => saveStatus("rejected"));
+      els.saveNotesBtn.addEventListener("click",    saveNotes);
+      els.sendEmailBtn.addEventListener("click",    sendEmail);
+      loadMessages();
     }
 
     init();
