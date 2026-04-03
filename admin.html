@@ -436,19 +436,25 @@
     }
 
     // ── Init ────────────────────────────────────────────────────────────────
-    function init() {
-      initEmailJS();
+   function init() {
+  initEmailJS();
 
-      els.searchInput.addEventListener("input",    renderAdmin);
-      els.filterStatus.addEventListener("change",  renderAdmin);
-      els.refreshBtn.addEventListener("click",     loadMessages);
-      els.markApprovedBtn.addEventListener("click", () => saveStatus("approved"));
-      els.markPendingBtn.addEventListener("click",  () => saveStatus("pending"));
-      els.markRejectedBtn.addEventListener("click", () => saveStatus("rejected"));
-      els.saveNotesBtn.addEventListener("click",    saveNotes);
-      els.sendEmailBtn.addEventListener("click",    sendEmail);
+  [
+    [els.searchInput,     "input",   renderAdmin],
+    [els.filterStatus,    "change",  renderAdmin],
+    [els.refreshBtn,      "click",   loadMessages],
+    [els.markApprovedBtn, "click",   () => saveStatus("approved")],
+    [els.markPendingBtn,  "click",   () => saveStatus("pending")],
+    [els.markRejectedBtn, "click",   () => saveStatus("rejected")],
+    [els.saveNotesBtn,    "click",   saveNotes],
+    [els.sendEmailBtn,    "click",   sendEmail],
+  ].forEach(([el, evt, fn]) => {
+    if (el) el.addEventListener(evt, fn);
+    else console.warn("Missing element for event:", evt, fn.name);
+  });
 
-      loadMessages();
+  loadMessages();
+}
     }
 
     // Poll until EmailJS is ready then init
