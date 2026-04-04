@@ -113,12 +113,53 @@
     .card-label { font-weight: 700; font-size: 19px; display: block; margin: 12px 0; }
     .card-text { font-size: 16px; color: var(--muted); }
 
-    .tax-graphic {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      margin: 20px auto 60px;
-      border-radius: var(--radius);
+    /* HTML Rendered Chart Styles */
+    .chart-container {
+        margin: 40px auto 60px;
+        background-color: #FFFFFF;
+        padding: 20px;
+        max-width: 1000px;
+    }
+    .chart-grid {
+        display: grid;
+        grid-template-columns: 80px 1fr 100px;
+        align-items: center;
+        row-gap: 12px;
+        column-gap: 20px;
+    }
+    .year-label { color: #111827; font-weight: 700; text-align: right; }
+    .bar-area { display: flex; align-items: center; position: relative; }
+    .bar-track { background-color: #F3F4F6; border-radius: 9999px; width: 100%; height: 44px; position: relative; overflow: hidden; }
+    .bar-fill { background: linear-gradient(90deg, #003057 0%, #173f6b 100%); border-radius: 9999px; height: 100%; }
+    .value-label { color: #111827; font-weight: 700; text-align: left; }
+    .peak-row-container { display: contents; }
+    .peak-background-overlay {
+        grid-column: 1 / span 3;
+        grid-row: 4; /* Assign to the 2031 row position */
+        border: 3px solid #FBBF24;
+        border-radius: 12px;
+        background-color: transparent;
+        width: calc(100% + 16px);
+        height: calc(100% + 16px);
+        margin-left: -8px;
+        z-index: 1;
+    }
+    .peak-content { z-index: 2; }
+    .peak-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #F97316;
+        color: #FFFFFF;
+        border-radius: 9999px;
+        padding: 4px 12px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .table-wrap { overflow-x: auto; margin-top: 20px; }
@@ -169,10 +210,6 @@
           <li><strong>Stable Future:</strong> Provides the financial foundation to support the district's 3,575 students for decades.</li>
         </ul>
       </div>
-      
-      <p style="margin-top: 30px; font-size: 17px; color: var(--muted);">
-        Residential and mixed-use development would add hundreds of students to the City system, straining existing resources while providing significantly less tax revenue.
-      </p>
     </div>
 
     <div class="form-container" id="support">
@@ -216,7 +253,76 @@
   <section id="economics">
     <h2>Projected Revenue & Economic Output</h2>
     
-    <img src="image_2f57aa.jpg" alt="Year-by-year tax revenue projection" class="tax-graphic">
+    <div class="chart-container">
+        <div class="chart-grid">
+            <div class="year-label">2028</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 10.9%;"></div></div>
+            </div>
+            <div class="value-label">$2.9M</div>
+
+            <div class="year-label">2029</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 21.9%;"></div></div>
+            </div>
+            <div class="value-label">$5.8M</div>
+
+            <div class="year-label">2030</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 61.1%;"></div></div>
+            </div>
+            <div class="value-label">$16.2M</div>
+
+            <div class="peak-row-container">
+                <div class="peak-background-overlay"></div>
+                <div class="year-label peak-content">2031</div>
+                <div class="bar-area peak-content">
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: 100%;">
+                            <span class="peak-badge">PEAK</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="value-label peak-content">$26.5M</div>
+            </div>
+
+            <div class="year-label">2032</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 99.6%;"></div></div>
+            </div>
+            <div class="value-label">$26.4M</div>
+
+            <div class="year-label">2033</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 96.6%;"></div></div>
+            </div>
+            <div class="value-label">$25.6M</div>
+
+            <div class="year-label">2034</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 92.1%;"></div></div>
+            </div>
+            <div class="value-label">$24.4M</div>
+
+            <div class="year-label">2035</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 89.8%;"></div></div>
+            </div>
+            <div class="value-label">$23.8M</div>
+
+            <div class="year-label">2036</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 88.7%;"></div></div>
+            </div>
+            <div class="value-label">$23.5M</div>
+
+            <div class="year-label">2037</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 88.3%;"></div></div>
+            </div>
+            <div class="value-label">$23.4M</div>
+        </div>
+    </div>
 
     <div class="grid-3">
       <div class="info-card">
