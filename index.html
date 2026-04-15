@@ -213,59 +213,62 @@
     </div>
 
     <div class="form-container" id="support">
-      <h3 style="margin-top: 0; font-size: 24px; font-weight: 800;">Support 1500 Gateway</h3>
-      <p style="font-size: 15px; color: var(--muted); margin-bottom: 25px;">Your voice matters to the City Council. Share your support today.</p>
-      
+      <h3 style="margin-top:0; margin-bottom: 24px; font-size: 24px;">Share Your Support</h3>
       <form id="supportForm">
         <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="fullName" placeholder="Your Name" required>
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" required />
         </div>
         <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="email" placeholder="email@example.com" required>
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
         </div>
         <div class="form-group">
-          <label>Locality</label>
-          <input type="text" id="locality" placeholder="Fredericksburg, VA" required>
+          <label for="locality">City / Neighborhood</label>
+          <input type="text" id="locality" placeholder="Where are you from?" />
         </div>
         <div class="form-group">
-          <span class="sub-instruction">Feel free to add your own message</span>
-          <label>Your Message</label>
-          <textarea id="message"></textarea>
+          <label for="message">Your Message to City Council</label>
+          <textarea id="message" required></textarea>
         </div>
-        
-        <label style="display: flex; gap: 12px; align-items: flex-start; font-weight: 400; cursor: pointer; margin-bottom: 20px;">
-          <input type="checkbox" id="consent" style="width: auto; margin-top: 4px;" required>
-          <span style="font-size: 14px;">I support 1500 Gateway and authorize this message to be shared with the City Council.</span>
-        </label>
+        <div class="form-group">
+          <label style="display: flex; align-items: center; font-weight: 500;">
+            <input type="checkbox" id="consent" required style="width: auto; margin-right: 10px;" />
+            I support 1500 Gateway and authorize this message to be shared with the City Council.
+          </label>
+        </div>
 
         <div id="publicStatus" class="status-msg"></div>
 
         <div class="btn-container">
-          <button type="submit" id="submitBtn" class="btn btn-main">Submit Support</button>
-          <button type="button" id="sendYourselfBtn" class="btn btn-alt">Email Council Directly</button>
+          <button type="submit" class="btn btn-main" id="submitBtn">Submit Support</button>
+          <button type="button" class="btn btn-alt" id="sendYourselfBtn">Email Council Directly</button>
         </div>
       </form>
     </div>
   </section>
 
-  <section id="economics">
-    <h2>Projected Revenue & Economic Output</h2>
-    
+  <section id="impact">
+    <h2>Economic Impact</h2>
     <div class="chart-container">
         <div class="chart-grid">
-            <div class="year-label">2028</div>
+            <div class="year-label">2027</div>
             <div class="bar-area">
-                <div class="bar-track"><div class="bar-fill" style="width: 10.9%;"></div></div>
+                <div class="bar-track"><div class="bar-fill" style="width: 8.5%;"></div></div>
             </div>
-            <div class="value-label">$2.9M</div>
+            <div class="value-label">$2.3M</div>
 
-            <div class="year-label">2029</div>
+            <div class="year-label">2028</div>
             <div class="bar-area">
                 <div class="bar-track"><div class="bar-fill" style="width: 21.9%;"></div></div>
             </div>
             <div class="value-label">$5.8M</div>
+
+            <div class="year-label">2029</div>
+            <div class="bar-area">
+                <div class="bar-track"><div class="bar-fill" style="width: 61.1%;"></div></div>
+            </div>
+            <div class="value-label">$16.2M</div>
 
             <div class="year-label">2030</div>
             <div class="bar-area">
@@ -455,12 +458,17 @@ Please support this high-benefit development.`;
           body: JSON.stringify(data),
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error(`Supabase error (${res.status}):`, errorText);
+          throw new Error(`HTTP ${res.status}: ${errorText}`);
+        }
 
         showStatus("Thank you! Your support has been submitted.", 'success');
         els.form.reset();
         els.message.value = defaultMsg;
       } catch (err) {
+        console.error("Submit error:", err);
         showStatus("Submission error. Please try again or use the email button.", 'error');
       } finally {
         els.submitBtn.disabled = false;
