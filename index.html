@@ -64,7 +64,7 @@
     }
     textarea { min-height: 450px; resize: vertical; }
 
-    .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .btn-container { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
     .btn {
       padding: 16px;
       border-radius: 8px;
@@ -242,7 +242,7 @@
 
         <div class="btn-container">
           <button type="submit" class="btn btn-main" id="submitBtn">Submit Support</button>
-          <button type="button" class="btn btn-alt" id="sendYourselfBtn">Email Council Directly</button>
+        
         </div>
       </form>
     </div>
@@ -422,7 +422,7 @@ Please support this high-benefit development.`;
       consent: document.getElementById("consent"),
       status: document.getElementById("publicStatus"),
       submitBtn: document.getElementById("submitBtn"),
-      sendSelfBtn: document.getElementById("sendYourselfBtn")
+      
     };
 
     function showStatus(text, type = 'success') {
