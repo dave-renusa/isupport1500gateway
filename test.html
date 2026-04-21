@@ -253,6 +253,25 @@
     .stat-callout .big-lbl {
       font-size: 15px; color: var(--muted); margin-top: 6px; display: block;
     }
+    .school-callouts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.school-callouts .stat-callout {
+  margin-bottom: 0;
+}
+
+.school-callouts .big-val {
+  font-size: 44px;
+}
+
+@media (max-width: 700px) {
+  .school-callouts {
+    grid-template-columns: 1fr;
+  }
+}
     .check-list { list-style: none; margin-top: 8px; }
     .check-list li {
       display: flex; gap: 14px; align-items: flex-start;
