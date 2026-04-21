@@ -164,30 +164,62 @@
     .status-msg.success { background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green-mid); display: block; }
     .status-msg.error { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
 
-    /* COUNCIL BAR */
-    .council-bar {
-      background: var(--green-light);
-      border-top: 3px solid var(--green);
-      padding: 52px 0;
-    }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
-    .council-bar h3 { font-size: 22px; color: var(--green-dark); margin-bottom: 6px; }
-    .council-bar > .wrap > p {
-      font-size: 15px; color: var(--muted); margin-bottom: 28px;
-    }
-    .council-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 12px;
-    }
-    .council-card {
-      background: white; border: 1px solid var(--border); border-radius: 4px;
-      padding: 14px 18px; display: flex; flex-direction: column; gap: 3px;
-    }
-    .council-name { font-weight: 600; font-size: 14px; }
-    .council-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
-    .council-email { font-size: 13px; color: var(--green); text-decoration: none; }
-    .council-email:hover { text-decoration: underline; }
+  /* COUNCIL BAR */
+.council-bar {
+  background: var(--off-white);
+  border-top: 1px solid var(--border);
+  padding: 36px 0;
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+.council-bar h3 {
+  font-size: 18px;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.council-bar > .wrap > p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.council-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 48px;
+}
+
+.council-list li {
+  break-inside: avoid;
+  padding: 8px 0;
+  font-size: 15px;
+  color: var(--text);
+  border-bottom: 1px solid rgba(0, 77, 40, 0.08);
+}
+
+.council-list li:last-child {
+  border-bottom: none;
+}
+
+.council-list strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.council-list span {
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+@media (max-width: 700px) {
+  .council-list {
+    columns: 1;
+  }
+}
 
     /* SECTIONS */
     section { padding: 96px 0; }
@@ -418,45 +450,17 @@
 <!-- COUNCIL BAR -->
 <div class="council-bar">
   <div class="wrap">
-    <h3>Who You Are Emailing</h3>
+    <h3>City Council Recipients</h3>
     <p>Your message will be shared with all seven members of the Fredericksburg City Council.</p>
-    <div class="council-grid">
-      <div class="council-card">
-        <span class="council-name">Kerry Devine</span>
-        <span class="council-title">Mayor</span>
-        <span class="council-email">kpdevine@fredericksburgva.gov</span>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Charlie Frye</span>
-        <span class="council-title">Vice Mayor</span>
-        <span class="council-email">clfrye@fredericksburgva.gov</span>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Matt Rowe</span>
-        <span class="council-title">Ward 1</span>
-        <span class="council-email">mdrowe@fredericksburgva.gov</span>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Joy Crump</span>
-        <span class="council-title">Ward 2</span>
-        <a href="mailto:jycrump@fredericksburgva.gov" class="council-email">jycrump@fredericksburgva.gov</a>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Susanna Finn</span>
-        <span class="council-title">Ward 3</span>
-        <a href="mailto:srfinn@fredericksburgva.gov" class="council-email">srfinn@fredericksburgva.gov</a>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Jannan Holmes</span>
-        <span class="council-title">At Large</span>
-        <a href="mailto:jwholmes@fredericksburgva.gov" class="council-email">jwholmes@fredericksburgva.gov</a>
-      </div>
-      <div class="council-card">
-        <span class="council-name">Will Mackintosh</span>
-        <span class="council-title">At Large</span>
-        <a href="mailto:wbmackintosh@fredericksburgva.gov" class="council-email">wbmackintosh@fredericksburgva.gov</a>
-      </div>
-    </div>
+    <ul class="council-list">
+      <li><strong>Kerry Devine</strong><span>Mayor</span></li>
+      <li><strong>Charlie Frye</strong><span>Vice Mayor</span></li>
+      <li><strong>Matt Rowe</strong><span>Ward 1</span></li>
+      <li><strong>Joy Crump</strong><span>Ward 2</span></li>
+      <li><strong>Susanna Finn</strong><span>Ward 3</span></li>
+      <li><strong>Jannan Holmes</strong><span>At Large</span></li>
+      <li><strong>Will Mackintosh</strong><span>At Large</span></li>
+    </ul>
   </div>
 </div>
 
