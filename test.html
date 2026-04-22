@@ -1142,6 +1142,12 @@ Please support this high-benefit development for the future of Fredericksburg.`;
     }
 
     els.message.value = defaultMsg;
+    els.message.style.height = "auto";
+    els.message.style.height = els.message.scrollHeight + "px";
+    els.message.addEventListener("input", () => {
+      els.message.style.height = "auto";
+      els.message.style.height = els.message.scrollHeight + "px";
+    });
     els.form.addEventListener("submit", handleSubmit);
   </script>
 </body>
