@@ -741,6 +741,30 @@
 
     footer a:hover { color: rgba(255,255,255,0.75); }
 
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* RESPONSIVE */
     @media (max-width: 960px) {
       .hero-content {
@@ -752,9 +776,41 @@
       .form-card { max-width: 100%; }
       .two-col { grid-template-columns: 1fr; gap: 40px; }
       .stats-row { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
       .council-list { columns: 1; }
       .stat-callout-secondary { max-width: 100%; }
+
+      .hamburger { display: flex; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 66px;
+        left: 0;
+        right: 0;
+        background: rgba(0,46,24,0.97);
+        backdrop-filter: blur(14px);
+        flex-direction: column;
+        gap: 0;
+        padding: 8px 0 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links li { width: 100%; }
+
+      .nav-links a {
+        display: block;
+        padding: 13px 28px;
+        font-size: 15px;
+      }
+
+      .nav-cta {
+        margin: 8px 20px 0 !important;
+        padding: 12px 22px !important;
+        border-radius: 3px;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -763,7 +819,10 @@
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-logo"><span>1500 Gateway</span> Data Campus</a>
-      <ul class="nav-links">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="#schools">Schools</a></li>
         <li><a href="#impact">Economic Impact</a></li>
         <li><a href="#compare">Why 1500?</a></li>
@@ -1140,6 +1199,17 @@ Please support this high-benefit development for the future of Fredericksburg.`;
 
       showStatus(statusEl, "Thank you — we'll be in touch soon!", "success");
     }
+
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("open");
+      navLinks.classList.toggle("open");
+    });
+    navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      hamburger.classList.remove("open");
+      navLinks.classList.remove("open");
+    }));
 
     els.message.value = defaultMsg;
     els.message.style.height = "auto";
