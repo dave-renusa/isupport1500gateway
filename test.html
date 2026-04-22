@@ -1081,7 +1081,7 @@
           <p class="section-label">Get Involved</p>
           <h2 class="section-title">Let's Reimagine Fredericksburg Together</h2>
           <p>Share your information and we'll pass along opportunities to get involved with the team. This small property, properly designed, will have limited burdens and tremendous positives for the City and its residents.</p>
-          <a href="mailto:info@1500Gateway.com" class="contact-link">info@1500Gateway.com</a>
+          <a href="mailto:1500gatewaycampus@gmail.com" class="contact-link">1500gatewaycampus@gmail.com</a>
           <span style="color:rgba(255,255,255,0.35); font-size:14px;">Developed by Penzance</span>
         </div>
         <div class="dark-card">
@@ -1187,18 +1187,28 @@ Please support this high-benefit development for the future of Fredericksburg.`;
       }
     }
 
-    function handleContactSubmit() {
-      const statusEl = document.getElementById("contactStatus");
-      const name = document.getElementById("cName").value.trim();
-      const email = document.getElementById("cEmail").value.trim();
+   function handleContactSubmit() {
+  const statusEl = document.getElementById("contactStatus");
+  const name = document.getElementById("cName").value.trim();
+  const email = document.getElementById("cEmail").value.trim();
+  const message = document.getElementById("cMsg").value.trim();
 
-      if (!name || !email) {
-        showStatus(statusEl, "Please enter your name and email.", "error");
-        return;
-      }
+  if (!name || !email || !message) {
+    showStatus(statusEl, "Please fill out your name, email, and message.", "error");
+    return;
+  }
 
-      showStatus(statusEl, "Thank you — we'll be in touch soon!", "success");
-    }
+  const subject = encodeURIComponent("1500 Gateway Website Contact");
+  const body = encodeURIComponent(
+`Name: ${name}
+Email: ${email}
+
+Message:
+${message}`
+  );
+
+  window.location.href = `mailto:1500gatewaycampus@gmail.com?subject=${subject}&body=${body}`;
+}
 
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("navLinks");
