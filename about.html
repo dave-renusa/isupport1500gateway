@@ -275,6 +275,30 @@
 
     footer a:hover { color: rgba(255,255,255,0.75); }
 
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* RESPONSIVE */
     @media (max-width: 960px) {
       .about-grid {
@@ -283,7 +307,39 @@
       }
       .logo-card { position: static; }
       .stats-row { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
+
+      .hamburger { display: flex; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 66px;
+        left: 0;
+        right: 0;
+        background: rgba(0,46,24,0.97);
+        backdrop-filter: blur(14px);
+        flex-direction: column;
+        gap: 0;
+        padding: 8px 0 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links li { width: 100%; }
+
+      .nav-links a {
+        display: block;
+        padding: 13px 28px;
+        font-size: 15px;
+      }
+
+      .nav-cta {
+        margin: 8px 20px 0 !important;
+        padding: 12px 22px !important;
+        border-radius: 3px;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -292,7 +348,10 @@
   <nav>
     <div class="nav-inner">
       <a href="test.html" class="nav-logo"><span>1500 Gateway</span> Data Campus</a>
-      <ul class="nav-links">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="test.html#schools">Schools</a></li>
         <li><a href="test.html#impact">Economic Impact</a></li>
         <li><a href="test.html#compare">Why 1500?</a></li>
@@ -358,6 +417,19 @@
       </div>
     </div>
   </section>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("open");
+      navLinks.classList.toggle("open");
+    });
+    navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      hamburger.classList.remove("open");
+      navLinks.classList.remove("open");
+    }));
+  </script>
 
   <footer>
     <p>&copy; 2026 Penzance &nbsp;&bull;&nbsp; Building Value, Creating Communities &nbsp;&bull;&nbsp; <a href="mailto:info@1500Gateway.com">info@1500Gateway.com</a></p>
