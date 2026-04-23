@@ -451,6 +451,17 @@
       display: block;
     }
 
+    .qualifier-note {
+      display: block;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 12.5px;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     .stat-callout-secondary {
       margin-top: 26px;
       max-width: 430px;
@@ -564,21 +575,22 @@
     }
 
     .track {
-      background: var(--green-mid);
-      border-radius: 2px;
+      background: #eef1ef;
+      border: 1px solid #e0e6e2;
+      border-radius: 3px;
       height: 34px;
       position: relative;
       overflow: hidden;
     }
 
     .fill {
-      background: linear-gradient(90deg, var(--green-dark) 0%, var(--green) 100%);
-      border-radius: 2px;
+      background: var(--green-dark);
+      border-radius: 2px 0 0 2px;
       height: 100%;
     }
 
     .fill.gold {
-      background: linear-gradient(90deg, var(--green-dark) 0%, var(--gold) 100%);
+      background: var(--gold);
     }
 
     .vl {
@@ -634,7 +646,7 @@
       background: #fafafa;
     }
 
-    th:nth-child(2) {
+    th.diff-col {
       background: var(--green-light);
       color: var(--green-dark);
     }
@@ -646,13 +658,38 @@
       color: var(--text);
     }
 
-    td:nth-child(2) {
+    td.diff-col {
       background: var(--green-light);
       font-weight: 700;
       color: var(--green-dark);
     }
 
     tr:last-child td { border-bottom: none; }
+
+    .tax-relief-callout {
+      margin-top: 44px;
+      background: var(--green-deep);
+      border-left: 5px solid var(--gold);
+      border-radius: 6px;
+      padding: 36px 40px;
+      color: white;
+    }
+
+    .tax-relief-callout h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .tax-relief-callout p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+      font-weight: 300;
+    }
 
     /* CONTACT */
     .contact { background: var(--green-deep); }
@@ -725,21 +762,31 @@
     footer {
       background: #001a0d;
       border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 36px 0;
-      text-align: center;
+      padding: 28px 0;
+    }
+
+    footer h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
     }
 
     footer p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.35);
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      max-width: 820px;
     }
 
     footer a {
-      color: rgba(255,255,255,0.45);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
     }
 
-    footer a:hover { color: rgba(255,255,255,0.75); }
+    footer a:hover { color: rgba(255,255,255,0.85); }
 
     /* HAMBURGER */
     .hamburger {
@@ -818,7 +865,7 @@
 
   <nav>
     <div class="nav-inner">
-      <a href="#" class="nav-logo"><span>1500 Gateway</span> Data Campus</a>
+      <a href="#" class="nav-logo"><span>1500 Gateway</span></a>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -826,7 +873,6 @@
         <li><a href="#schools">Schools</a></li>
         <li><a href="#impact">Economic Impact</a></li>
         <li><a href="#compare">Why 1500?</a></li>
-        <li><a href="about.html">About Penzance</a></li>
         <li><a href="#support" class="nav-cta">Show Your Support</a></li>
       </ul>
     </div>
@@ -842,19 +888,19 @@
       <div class="hero-text">
         <h1>A <em>Good Neighbor</em> for the City of Fredericksburg.</h1>
         <p class="hero-lead">
-          1500 Gateway is part of the solution. We have reduced the project's size and pushed the building further from neighbors — more than two football fields of separation once the new Gateway Boulevard road is built.
+          1500 Gateway will generate tremendous positive impact for the City of Fredericksburg while minimizing any negative impacts to the surrounding community.
         </p>
         <div class="hero-features">
-          <div class="hero-feature">Over 36 acres of open space with a perpetually preserved tree canopy</div>
-          <div class="hero-feature">High-quality generators placed on the I-95 side of the building</div>
-          <div class="hero-feature">Air-cooled design — minimal impact on city water resources</div>
+          <div class="hero-feature">36 acres of thoughtfully designed campus, with buffers and setbacks that protect neighboring properties</div>
+          <div class="hero-feature">$23M+ in estimated annual tax revenue and $208M+ in total economic impact for the City of Fredericksburg</div>
+          <div class="hero-feature">Up to $6.3M+ annually available for Fredericksburg City Public Schools, strengthening classrooms, teachers, and student outcomes</div>
         </div>
         <a href="#support" class="btn-gold">Show Your Support</a>
       </div>
 
       <div class="form-card" id="support">
         <h3>Share Your Support</h3>
-        <p class="form-subtitle">Send a message to your Fredericksburg City Council. </p>><strong>Edit it freely — add your own voice.</strong></br></p>
+        <p class="form-subtitle">Send a message to your Fredericksburg City Council. <strong>Edit it freely — add your own voice.</strong></p>
         <form id="supportForm">
           <div class="form-group">
             <label for="fullName">Full Name</label>
@@ -906,11 +952,12 @@
       <div class="two-col">
         <div>
           <p class="section-label">Transformative School Funding</p>
-          <h2 class="section-title">A Generational Investment in Fredericksburg's Children</h2>
+          <h2 class="section-title">A Generational Investment in Fredericksburg's Future</h2>
           <p class="section-lead">The 1500 Gateway Data Campus can have a generational impact for the school children of Fredericksburg. The increase in funding for City Schools is significant, impactful, and transformative.</p>
           <div class="stat-callout">
             <span class="big-val">19%</span>
             <span class="big-lbl">Increase in local school funding — <strong>$6.3 million</strong> in new yearly revenue for the district.</span>
+            <span class="qualifier-note">Estimated minimum. The City Council retains full discretion over how tax revenue is allocated.</span>
           </div>
         </div>
 
@@ -926,6 +973,7 @@
           <div class="stat-callout stat-callout-secondary">
             <span class="big-val">$22,909</span>
             <span class="big-lbl"><strong>Investment per student</strong> over a full K–12 career in Fredericksburg City Public Schools.</span>
+            <span class="qualifier-note">Estimated minimum. The City Council retains full discretion over how tax revenue is allocated.</span>
           </div>
         </div>
       </div>
@@ -963,7 +1011,7 @@
     <div class="wrap">
       <p class="section-label">Revenue Projection</p>
       <h2 class="section-title">City Revenue Over Time</h2>
-      <p class="section-lead">Annual revenue to the City Operating Budget, growing to a peak of $26.5M in 2031 and sustaining above $23M through the decade.</p>
+      <p class="section-lead">Annual revenue peaks at $26.5M, sustaining above $23M moving forward.</p>
       <div class="chart-box">
         <div class="chart-grid">
           <div class="yr">2027</div>
@@ -1010,7 +1058,7 @@
           <div class="track"><div class="fill" style="width:88.7%"></div></div>
           <div class="vl">$23.5M</div>
 
-          <div class="yr">2037</div>
+          <div class="yr">2037+</div>
           <div class="track"><div class="fill" style="width:88.3%"></div></div>
           <div class="vl">$23.4M</div>
         </div>
@@ -1028,45 +1076,39 @@
         <table>
           <thead>
             <tr>
-              <th>Category</th>
-              <th>1500 Gateway (Data Center)</th>
+              <th>Metric</th>
+              <th>1500 Gateway</th>
               <th>Mixed-Use Development</th>
+              <th class="diff-col">Difference</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Daily Vehicle Trips</strong></td>
-              <td>750 &mdash; 94% Fewer</td>
-              <td>12,085</td>
+              <td><strong>Daily vehicle trips</strong></td>
+              <td>~150</td>
+              <td>~2,500</td>
+              <td class="diff-col">94% fewer</td>
             </tr>
             <tr>
-              <td><strong>Annual Tax Revenue</strong></td>
-              <td>$26.5M &mdash; 12.5x More</td>
-              <td>$2.2M</td>
+              <td><strong>Open space</strong></td>
+              <td>36 acres</td>
+              <td>12 acres</td>
+              <td class="diff-col">300% more</td>
             </tr>
             <tr>
-              <td><strong>Water / Sewer Demand</strong></td>
-              <td>2,700 GPD &mdash; 99% Less</td>
-              <td>303,880 GPD</td>
-            </tr>
-            <tr>
-              <td><strong>Open Space</strong></td>
-              <td>36.09 Acres &mdash; 189% More</td>
-              <td>12.51 Acres</td>
-            </tr>
-            <tr>
-              <td><strong>CO&#8322; Emissions</strong></td>
-              <td>208t / year &mdash; 67% Less</td>
-              <td>621t / year</td>
-            </tr>
-            <tr>
-              <td><strong>New Students Added</strong></td>
-              <td>0</td>
-              <td>Hundreds</td>
+              <td><strong>Permanent jobs</strong></td>
+              <td>180+</td>
+              <td>varies</td>
+              <td class="diff-col">&mdash;</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <div class="tax-relief-callout">
+        <h3>An Alternative to Rising Real Estate Taxes</h3>
+        <p>As Fredericksburg City Council weighs increases to real estate taxes, 1500 Gateway offers a different path forward: new, recurring revenue that funds schools, services, and infrastructure without adding to the burden on homeowners.</p>
+      </div>
+
       <div style="text-align:center; margin-top:48px;">
         <a href="#support" class="btn-gold">Show Your Support</a>
       </div>
@@ -1082,7 +1124,6 @@
           <h2 class="section-title">Let's Reimagine Fredericksburg Together</h2>
           <p>Share your information and we'll pass along opportunities to get involved with the team. This small property, properly designed, will have limited burdens and tremendous positives for the City and its residents.</p>
           <a href="mailto:1500gatewaycampus@gmail.com" class="contact-link">1500gatewaycampus@gmail.com</a>
-          <span style="color:rgba(255,255,255,0.35); font-size:14px;">Developed by Penzance</span>
         </div>
         <div class="dark-card">
           <div class="form-group">
@@ -1105,7 +1146,10 @@
   </section>
 
   <footer>
-    <p>&copy; 2026 Penzance &nbsp;&bull;&nbsp; Building Value, Creating Communities &nbsp;&bull;&nbsp; <a href="mailto:1500gatewaycampus@gmail.com">1500gatewaycampus@gmail.com</a></p>
+    <div class="wrap">
+      <h4>About the Developer</h4>
+      <p>1500 Gateway is being developed by Penzance, a firm committed to responsible growth and enduring value in the communities where we invest. We build projects designed to be good neighbors, delivering long-term benefits to the cities and residents we serve.</p>
+    </div>
   </footer>
 
   <script>
