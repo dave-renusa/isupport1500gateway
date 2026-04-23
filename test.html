@@ -285,6 +285,13 @@
       line-height: 1.5;
     }
 
+    .council-note {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
     .btn-submit {
       width: 100%;
       padding: 14px;
@@ -911,7 +918,11 @@
             <input type="email" id="email" placeholder="you@email.com" required />
           </div>
           <div class="form-group">
-            <label for="locality">City / Neighborhood</label>
+            <label for="address">Address</label>
+            <input type="text" id="address" placeholder="123 Main St" />
+          </div>
+          <div class="form-group">
+            <label for="locality">Town / City</label>
             <input type="text" id="locality" placeholder="Where are you from?" />
           </div>
           <div class="form-group">
@@ -924,25 +935,9 @@
           </div>
           <div id="publicStatus" class="status-msg"></div>
           <button type="submit" class="btn-submit" id="submitBtn">Submit Support</button>
+          <p class="council-note">Your message will be shared with all seven members of the Fredericksburg City Council: Mayor Kerry Devine, Vice Mayor Charlie Frye, Matt Rowe, Joy Crump, Susanna Finn, Jannan Holmes and Will Mackintosh.</p>
         </form>
       </div>
-    </div>
-  </div>
-
-  <!-- COUNCIL BAR -->
-  <div class="council-bar">
-    <div class="wrap">
-      <h3>City Council Recipients</h3>
-      <p>Your message will be shared with all seven members of the Fredericksburg City Council.</p>
-      <ul class="council-list">
-        <li><strong>Kerry Devine</strong><span>Mayor</span></li>
-        <li><strong>Charlie Frye</strong><span>Vice Mayor</span></li>
-        <li><strong>Matt Rowe</strong><span>Ward 1</span></li>
-        <li><strong>Joy Crump</strong><span>Ward 2</span></li>
-        <li><strong>Susanna Finn</strong><span>Ward 3</span></li>
-        <li><strong>Jannan Holmes</strong><span>At Large</span></li>
-        <li><strong>Will Mackintosh</strong><span>At Large</span></li>
-      </ul>
     </div>
   </div>
 
@@ -1201,6 +1196,7 @@ Please support this high-benefit development for the future of Fredericksburg.`;
       form: document.getElementById("supportForm"),
       fullName: document.getElementById("fullName"),
       email: document.getElementById("email"),
+      address: document.getElementById("address"),
       locality: document.getElementById("locality"),
       message: document.getElementById("message"),
       consent: document.getElementById("consent"),
@@ -1222,6 +1218,7 @@ Please support this high-benefit development for the future of Fredericksburg.`;
         id: crypto.randomUUID(),
         full_name: els.fullName.value.trim(),
         email: els.email.value.trim(),
+        address: els.address.value.trim(),
         locality: els.locality.value.trim(),
         message: els.message.value.trim(),
         consent: els.consent.checked,
