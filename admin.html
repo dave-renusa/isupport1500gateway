@@ -464,7 +464,7 @@
       els.sendEmailBtn.disabled    = isSent;
       els.sendEmailBtn.textContent = isSent ? "Already sent" : "Send email now";
 
-      renderRecipients(els.recipientListAdmin, sel.recipients || councilRecipients);
+      renderRecipients(els.recipientListAdmin, councilRecipients);
     }
 
     async function loadMessages() {
@@ -521,9 +521,8 @@
       setBanner(els.sendStatus, "Sending...", "info");
       els.sendStatus.classList.remove("hidden");
 
-      const recipients = sel.recipients || councilRecipients;
-      const toEmails   = recipients.map(r => r.email).join(", ");
-      const toNames    = recipients.map(r => r.name).join(", ");
+      const toEmails = councilRecipients.map(r => r.email).join(", ");
+      const toNames  = councilRecipients.map(r => r.name).join(", ");
 
       const templateParams = {
         to_email:           toEmails,
