@@ -231,6 +231,14 @@
 
     .form-group { margin-bottom: 14px; }
 
+    .hp-field {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
     label {
       display: block;
       font-size: 12px;
@@ -909,25 +917,29 @@
         <h3>Share Your Support</h3>
         <p class="form-subtitle">Send a message to your Fredericksburg City Council. <strong>Edit it freely — add your own voice.</strong></p>
         <form id="supportForm">
+          <div class="hp-field" aria-hidden="true">
+            <label for="hp_website">Website</label>
+            <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="form-group">
             <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" placeholder="Jane Smith" required />
+            <input type="text" id="fullName" placeholder="Jane Smith" maxlength="120" required />
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="you@email.com" required />
+            <input type="email" id="email" placeholder="you@email.com" maxlength="254" required />
           </div>
           <div class="form-group">
             <label for="address">Address</label>
-            <input type="text" id="address" placeholder="123 Main St" required />
+            <input type="text" id="address" placeholder="123 Main St" maxlength="200" required />
           </div>
           <div class="form-group">
             <label for="locality">Town / City</label>
-            <input type="text" id="locality" placeholder="Where are you from?" />
+            <input type="text" id="locality" placeholder="Where are you from?" maxlength="100" />
           </div>
           <div class="form-group">
             <label for="message">Your Message to City Council</label>
-            <textarea id="message" required></textarea>
+            <textarea id="message" maxlength="5000" required></textarea>
           </div>
           <div class="consent-row">
             <input type="checkbox" id="consent" required />
@@ -1176,12 +1188,6 @@
     const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9";
     const TABLE_NAME = "support_messages";
 
-    const recipients = [
-      { email: "dave@renusa.org" },
-      { email: "chad@renusa.org" },
-      { email: "john@renusa.org" }
-    ];
-
     const defaultMsg = `Dear City Council,
 
 I am writing to share my strong support for the 1500 Gateway project.
@@ -1200,6 +1206,7 @@ Please support this high-benefit development for the future of Fredericksburg.`;
       locality: document.getElementById("locality"),
       message: document.getElementById("message"),
       consent: document.getElementById("consent"),
+      honeypot: document.getElementById("hp_website"),
       status: document.getElementById("publicStatus"),
       submitBtn: document.getElementById("submitBtn"),
     };
@@ -1211,19 +1218,25 @@ Please support this high-benefit development for the future of Fredericksburg.`;
 
     async function handleSubmit(e) {
       e.preventDefault();
+
+      if (els.honeypot && els.honeypot.value) {
+        showStatus(els.status, "Thank you! Your support has been submitted.", "success");
+        return;
+      }
+
       els.submitBtn.disabled = true;
       showStatus(els.status, "Sending your message...", "success");
 
       const data = {
         id: crypto.randomUUID(),
-        full_name: els.fullName.value.trim(),
-        email: els.email.value.trim(),
-        address: els.address.value.trim(),
-        locality: els.locality.value.trim(),
-        message: els.message.value.trim(),
+        full_name: els.fullName.value.trim().slice(0, 120),
+        email: els.email.value.trim().slice(0, 254),
+        address: els.address.value.trim().slice(0, 200),
+        locality: els.locality.value.trim().slice(0, 100),
+        message: els.message.value.trim().slice(0, 5000),
         consent: els.consent.checked,
         review_status: "pending",
-        recipients: recipients,
+        recipients: [],
         created_at: new Date().toISOString(),
       };
 
