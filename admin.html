@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1500 Gateway Admin Review</title>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel-soft: #ffffff;
+      --border: rgba(15, 23, 42, 0.12);
+      --text: #0f172a;
+      --muted: #334155;
+      --accent: #059669;
+      --radius: 24px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+    button, input, textarea, select { font: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(255,255,255,0.94); }
+    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; flex-wrap: wrap; }
+    .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
+    .title { font-size: 24px; font-weight: 800; }
+    main { padding: 36px 0 64px; }
+    .grid-3, .admin-grid, .support-grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .admin-grid { grid-template-columns: 1.05fr 0.95fr; margin-top: 32px; }
+    .support-grid { grid-template-columns: 1fr 1fr; margin-top: 18px; }
+    .card { border: 1px solid var(--border); background: var(--panel-soft); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; }
+    .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; }
+    h2, h3 { margin: 12px 0 0; line-height: 1.15; color: var(--text); }
+    h3 { font-size: 28px; }
+    .muted { color: var(--muted); line-height: 1.8; font-size: 17px; }
+    .field, .textarea, .select { width: 100%; border-radius: 18px; border: 1px solid var(--border); background: #ffffff; color: var(--text); padding: 16px 18px; outline: none; font-size: 17px; }
+    .field:focus, .textarea:focus, .select:focus { border-color: rgba(5,150,105,0.65); }
+    .textarea { min-height: 160px; resize: vertical; }
+    .btn, .btn-soft, .btn-send, .status-btn { border: 0; cursor: pointer; border-radius: 16px; transition: 0.2s ease; font-weight: 800; padding: 16px 20px; font-size: 16px; }
+    .btn { background: var(--accent); color: #ffffff; }
+    .btn-soft, .status-btn { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-send { background: #0f172a; color: #ffffff; }
+    .btn:hover, .btn-soft:hover, .status-btn:hover, .btn-send:hover { transform: translateY(-1px); }
+    .btn:disabled, .btn-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .button-row, .admin-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .search-wrap { flex: 1; min-width: 220px; }
+    .recipient-box, .list-item, .message-box { border-radius: 20px; border: 1px solid var(--border); background: #ffffff; }
+    .recipient-box, .list-item { padding: 18px; }
+    .message-box { padding: 20px; }
+    .list-scroll { margin-top: 18px; max-height: 650px; overflow: auto; display: grid; gap: 12px; padding-right: 4px; }
+    .list-item { cursor: pointer; text-align: left; }
+    .list-item.active { border-color: rgba(5,150,105,0.35); background: rgba(5,150,105,0.08); }
+    .status-pill { display: inline-block; padding: 7px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: capitalize; border: 1px solid transparent; }
+    .pending  { color: #92400e; background: rgba(251,191,36,0.12);  border-color: rgba(251,191,36,0.24); }
+    .approved { color: #065f46; background: rgba(5,150,105,0.10);   border-color: rgba(5,150,105,0.22); }
+    .rejected { color: #991b1b; background: rgba(220,38,38,0.08);   border-color: rgba(220,38,38,0.18); }
+    .sent     { color: #1e40af; background: rgba(59,130,246,0.08);  border-color: rgba(59,130,246,0.22); }
+    .top-row { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+    .strong { font-weight: 800; }
+    .small { font-size: 16px; }
+    .tiny { font-size: 13px; color: var(--muted); }
+    .hidden { display: none !important; }
+    .banner { margin-top: 18px; padding: 16px 18px; border-radius: 18px; font-size: 15px; }
+    .banner.success { border: 1px solid rgba(5,150,105,0.20); background: rgba(5,150,105,0.08); color: #065f46; }
+    .banner.error   { border: 1px solid rgba(220,38,38,0.18); background: rgba(220,38,38,0.08); color: #991b1b; }
+    .banner.info    { border: 1px solid rgba(59,130,246,0.20); background: rgba(59,130,246,0.08); color: #1e40af; }
+
+    @media (max-width: 960px) {
+      .grid-3, .admin-grid, .support-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Login overlay */
+    #loginOverlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: #f8fafc;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    #loginOverlay .card { max-width: 420px; width: 100%; }
+    #loginOverlay h2 { font-size: 22px; margin-top: 8px; }
+    #loginOverlay .muted { font-size: 14px; margin-bottom: 18px; }
+    #loginOverlay .field { margin-top: 12px; }
+    #loginOverlay .btn { margin-top: 18px; width: 100%; }
+    #loginError {
+      display: none; margin-top: 12px; padding: 10px 14px;
+      border-radius: 12px; background: rgba(220,38,38,0.08);
+      color: #991b1b; font-size: 14px; border: 1px solid rgba(220,38,38,0.18);
+    }
+    body.locked { overflow: hidden; }
+    .logout-btn {
+      background: transparent; color: var(--muted); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .logout-btn:hover { color: var(--text); }
+    .hidden-initial { visibility: hidden; }
+  </style>
+</head>
+<body class="locked">
+  <!-- LOGIN OVERLAY -->
+  <div id="loginOverlay">
+    <div class="card">
+      <div class="eyebrow">1500 Gateway</div>
+      <h2>Admin sign in</h2>
+      <div class="muted">This dashboard is restricted. Sign in with your authorized admin account.</div>
+      <form id="loginForm" autocomplete="on">
+        <label for="loginEmail" class="muted" style="font-size:13px;">Email</label>
+        <input class="field" type="email" id="loginEmail" autocomplete="username" required />
+        <label for="loginPassword" class="muted" style="font-size:13px; margin-top:12px; display:block;">Password</label>
+        <input class="field" type="password" id="loginPassword" autocomplete="current-password" required />
+        <button type="submit" class="btn" id="loginBtn">Sign in</button>
+        <div id="loginError"></div>
+      </form>
+    </div>
+  </div>
+
+  <header class="hidden-initial" id="appHeader">
+    <div class="wrap header-row">
+      <div>
+        <div class="eyebrow">1500 Gateway</div>
+        <div class="title">Admin review</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span class="tiny" id="sessionEmail"></span>
+        <button class="logout-btn" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap hidden-initial" id="appMain">
+
+    <div class="grid-3">
+      <div class="card"><div class="kicker">Total submissions</div><h3 id="countAll">0</h3></div>
+      <div class="card"><div class="kicker">Pending</div><h3 id="countPending">0</h3></div>
+      <div class="card"><div class="kicker">Approved / Sent</div><h3><span id="countApproved">0</span> / <span id="countSent">0</span></h3></div>
+    </div>
+
+    <div class="admin-grid">
+      <div class="card">
+        <div class="top-row">
+          <div>
+            <div class="kicker">Review queue</div>
+            <h3>Support messages</h3>
+          </div>
+          <button class="btn-soft" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="admin-toolbar">
+          <div class="search-wrap">
+            <input class="field" id="searchInput" placeholder="Search name, email, place, message" />
+          </div>
+          <select class="select" id="filterStatus">
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="sent">Sent</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div id="messageList" class="list-scroll"></div>
+      </div>
+
+      <div class="card">
+        <div id="adminDetailEmpty" class="muted">Select a message to review.</div>
+
+        <div id="adminDetail" class="hidden">
+          <div class="top-row">
+            <div>
+              <div class="kicker">Message detail</div>
+              <h3 id="detailName"></h3>
+              <div class="muted small" id="detailLocality"></div>
+              <div class="small" style="color: var(--accent);" id="detailEmail"></div>
+            </div>
+            <div id="detailStatus" class="status-pill pending">pending</div>
+          </div>
+
+          <div class="button-row">
+            <button class="status-btn" type="button" id="markApprovedBtn">Mark approved</button>
+            <button class="status-btn" type="button" id="markPendingBtn">Mark pending</button>
+            <button class="status-btn" type="button" id="markRejectedBtn">Mark rejected</button>
+          </div>
+
+          <div class="message-box" style="margin-top:18px;">
+            <div class="strong">Support message</div>
+            <div id="detailMessage" class="muted" style="white-space: pre-wrap; margin-top: 12px;"></div>
+          </div>
+
+          <!-- Send section -->
+          <div style="margin-top:18px; padding:20px; border-radius:20px; border:1px solid var(--border); background:#f8fafc;">
+            <div class="strong">Send email as supporter</div>
+            <div class="muted small" style="margin-top:8px;">
+              Sends via EmailJS. Recipients will see the supporter's name and can reply directly to their email address.
+            </div>
+            <div class="button-row">
+              <button class="btn-send" type="button" id="sendEmailBtn">Send email now</button>
+            </div>
+            <div id="sendStatus" class="banner hidden"></div>
+          </div>
+
+          <div class="support-grid">
+            <div>
+              <div class="strong">Admin notes</div>
+              <textarea id="adminNotes" class="textarea" style="margin-top:12px;" placeholder="Add internal notes here"></textarea>
+              <div class="button-row">
+                <button class="btn" type="button" id="saveNotesBtn">Save notes</button>
+              </div>
+              <div id="adminSaveStatus" class="tiny" style="margin-top:12px;"></div>
+            </div>
+            <div>
+              <div class="strong">Recipients</div>
+              <div id="recipientListAdmin" style="margin-top:12px; display:grid; gap:12px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ── Supabase ────────────────────────────────────────────────────────────
+    const SUPABASE_URL      = "https://csxvtewzlhigrzvpxtvf.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_4fYL5aq_q3wK_3A6bjOLCw_B5Juc6c9";
+    const TABLE_NAME        = "support_messages";
+    const SESSION_KEY       = "admin_session_v1";
+
+    let SESSION = null;
+
+    function saveSession(s) { SESSION = s; localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+    function clearSession() { SESSION = null; localStorage.removeItem(SESSION_KEY); }
+    function loadSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const s = JSON.parse(raw);
+        if (!s?.access_token || !s?.expires_at) return null;
+        if (Date.now() / 1000 > s.expires_at - 30) return null; // treat near-expiry as expired
+        SESSION = s;
+        return s;
+      } catch { return null; }
+    }
+
+    async function login(email, password) {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error_description || body.msg || "Invalid email or password.");
+      }
+      const s = await res.json();
+      saveSession(s);
+      return s;
+    }
+
+    async function logout() {
+      try {
+        if (SESSION?.access_token) {
+          await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+            method: "POST",
+            headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SESSION.access_token}` },
+          });
+        }
+      } catch {}
+      clearSession();
+      showLogin();
+    }
+
+    function showLogin() {
+      document.body.classList.add("locked");
+      document.getElementById("loginOverlay").style.display = "flex";
+      document.getElementById("appHeader").classList.add("hidden-initial");
+      document.getElementById("appMain").classList.add("hidden-initial");
+    }
+
+    function showApp() {
+      document.body.classList.remove("locked");
+      document.getElementById("loginOverlay").style.display = "none";
+      document.getElementById("appHeader").classList.remove("hidden-initial");
+      document.getElementById("appMain").classList.remove("hidden-initial");
+      const email = SESSION?.user?.email;
+      if (email) document.getElementById("sessionEmail").textContent = email;
+    }
+
+    const councilRecipients = [
+      { name: "Dave",  role: "RenUSA", email: "dave@renusa.org" },
+      { name: "Chad",  role: "RenUSA", email: "chad@renusa.org" },
+      { name: "John",  role: "RenUSA", email: "john@renusa.org" }
+    ];
+
+    // ── EmailJS config ──────────────────────────────────────────────────────
+    const EJS_PUBLIC_KEY  = "gPDEs8wJd0K_7vL8G";
+    const EJS_SERVICE_ID  = "service_8mcczta";
+    const EJS_TEMPLATE_ID = "template_0i3avw1";
+
+    function loadConfig() {
+      return { publicKey: EJS_PUBLIC_KEY, serviceId: EJS_SERVICE_ID, templateId: EJS_TEMPLATE_ID };
+    }
+
+    function initEmailJS() {
+      emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+      return true;
+    }
+
+    // ── State ───────────────────────────────────────────────────────────────
+    let messages   = [];
+    let selectedId = null;
+
+    const els = {
+      messageList:        document.getElementById("messageList"),
+      searchInput:        document.getElementById("searchInput"),
+      filterStatus:       document.getElementById("filterStatus"),
+      refreshBtn:         document.getElementById("refreshBtn"),
+      adminDetailEmpty:   document.getElementById("adminDetailEmpty"),
+      adminDetail:        document.getElementById("adminDetail"),
+      detailName:         document.getElementById("detailName"),
+      detailLocality:     document.getElementById("detailLocality"),
+      detailEmail:        document.getElementById("detailEmail"),
+      detailStatus:       document.getElementById("detailStatus"),
+      detailMessage:      document.getElementById("detailMessage"),
+      adminNotes:         document.getElementById("adminNotes"),
+      adminSaveStatus:    document.getElementById("adminSaveStatus"),
+      markApprovedBtn:    document.getElementById("markApprovedBtn"),
+      markPendingBtn:     document.getElementById("markPendingBtn"),
+      markRejectedBtn:    document.getElementById("markRejectedBtn"),
+      sendEmailBtn:       document.getElementById("sendEmailBtn"),
+      sendStatus:         document.getElementById("sendStatus"),
+      recipientListAdmin: document.getElementById("recipientListAdmin"),
+      countAll:           document.getElementById("countAll"),
+      countPending:       document.getElementById("countPending"),
+      countApproved:      document.getElementById("countApproved"),
+      countSent:          document.getElementById("countSent"),
+    };
+
+    // ── Supabase helpers ────────────────────────────────────────────────────
+    function sbHeaders() {
+      if (!SESSION?.access_token) throw new Error("Not signed in.");
+      return {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SESSION.access_token}`,
+      };
+    }
+
+    async function handleAuthFailure() {
+      clearSession();
+      showLogin();
+      throw new Error("Session expired. Please sign in again.");
+    }
+
+    async function sbSelect() {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`,
+        { headers: sbHeaders() }
+      );
+      if (res.status === 401 || res.status === 403) return handleAuthFailure();
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    async function sbUpdate(id, payload) {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}`,
+        { method: "PATCH", headers: sbHeaders(), body: JSON.stringify(payload) }
+      );
+      if (res.status === 401 || res.status === 403) return handleAuthFailure();
+      if (!res.ok) throw new Error(await res.text());
+    }
+
+    // ── Render ──────────────────────────────────────────────────────────────
+    function getSelected() { return messages.find(m => m.id === selectedId) || null; }
+
+    function statusClass(s) {
+      return s === "approved" ? "approved"
+           : s === "rejected" ? "rejected"
+           : s === "sent"     ? "sent"
+           : "pending";
+    }
+
+    function escHtml(t) {
+      const d = document.createElement("div");
+      d.textContent = t;
+      return d.innerHTML;
+    }
+
+    function updateCounts() {
+      els.countAll.textContent      = messages.length;
+      els.countPending.textContent  = messages.filter(m => m.review_status === "pending").length;
+      els.countApproved.textContent = messages.filter(m => m.review_status === "approved").length;
+      els.countSent.textContent     = messages.filter(m => m.review_status === "sent").length;
+    }
+
+    function renderRecipients(target, recipients) {
+      target.innerHTML = recipients.map(r => `
+        <div class="recipient-box">
+          <div class="strong">${r.name}</div>
+          <div class="tiny">${r.role}</div>
+          <div class="small" style="color:var(--accent); margin-top:6px;">${r.email}</div>
+        </div>
+      `).join("");
+    }
+
+    function setBanner(el, msg, type = "success") {
+      el.textContent = msg;
+      el.className = `banner ${type}`;
+    }
+
+    function renderAdmin() {
+      updateCounts();
+      const search = els.searchInput.value.trim().toLowerCase();
+      const filter = els.filterStatus.value;
+
+      const filtered = messages.filter(item => {
+        const matchFilter = filter === "all" || item.review_status === filter;
+        const hay = `${item.full_name} ${item.email} ${item.locality} ${item.message}`.toLowerCase();
+        return matchFilter && (!search || hay.includes(search));
+      });
+
+      els.messageList.innerHTML = filtered.length
+        ? filtered.map(item => `
+            <div class="list-item ${item.id === selectedId ? "active" : ""}" data-id="${item.id}">
+              <div style="display:flex; justify-content:space-between; gap:12px; align-items:start; flex-wrap:wrap;">
+                <div>
+                  <div class="strong">${escHtml(item.full_name)}</div>
+                  <div class="tiny">${escHtml(item.locality)}</div>
+                  <div class="small" style="color:var(--accent); margin-top:6px;">${escHtml(item.email)}</div>
+                </div>
+                <div class="status-pill ${statusClass(item.review_status)}">${item.review_status}</div>
+              </div>
+              <div class="muted small" style="margin-top:12px;">${escHtml(item.message).slice(0,170)}${item.message.length > 170 ? "..." : ""}</div>
+            </div>
+          `).join("")
+        : `<div class="recipient-box muted">No messages found.</div>`;
+
+      document.querySelectorAll(".list-item[data-id]").forEach(node => {
+        node.addEventListener("click", () => {
+          selectedId = node.getAttribute("data-id");
+          els.sendStatus.className = "banner hidden";
+          renderAdmin();
+        });
+      });
+
+      const sel = getSelected();
+      if (!sel) {
+        els.adminDetailEmpty.classList.remove("hidden");
+        els.adminDetail.classList.add("hidden");
+        return;
+      }
+
+      els.adminDetailEmpty.classList.add("hidden");
+      els.adminDetail.classList.remove("hidden");
+      els.detailName.textContent     = sel.full_name;
+      els.detailLocality.textContent = sel.locality;
+      els.detailEmail.textContent    = sel.email;
+      els.detailMessage.textContent  = sel.message;
+      els.detailStatus.textContent   = sel.review_status;
+      els.detailStatus.className     = `status-pill ${statusClass(sel.review_status)}`;
+      els.adminNotes.value           = sel.admin_notes || "";
+
+      const isSent = sel.review_status === "sent";
+      els.sendEmailBtn.disabled    = isSent;
+      els.sendEmailBtn.textContent = isSent ? "Already sent" : "Send email now";
+
+      renderRecipients(els.recipientListAdmin, sel.recipients || councilRecipients);
+    }
+
+    async function loadMessages() {
+      try {
+        messages   = await sbSelect();
+        selectedId = messages[0]?.id || null;
+      } catch (err) {
+        els.messageList.innerHTML = `<div class="recipient-box muted">Could not load: ${err.message}</div>`;
+      }
+      renderAdmin();
+    }
+
+    async function saveStatus(nextStatus) {
+      const sel = getSelected();
+      if (!sel) return;
+      sel.review_status = nextStatus;
+      sel.admin_notes   = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = "Saving...";
+      renderAdmin();
+      try {
+        await sbUpdate(sel.id, { review_status: nextStatus, admin_notes: sel.admin_notes });
+        els.adminSaveStatus.textContent = "Saved.";
+      } catch (err) {
+        els.adminSaveStatus.textContent = err.message;
+      }
+    }
+
+    async function saveNotes() {
+      const sel = getSelected();
+      if (!sel) return;
+      sel.admin_notes = els.adminNotes.value.trim();
+      els.adminSaveStatus.textContent = "Saving...";
+      try {
+        await sbUpdate(sel.id, { admin_notes: sel.admin_notes });
+        els.adminSaveStatus.textContent = "Saved.";
+      } catch (err) {
+        els.adminSaveStatus.textContent = err.message;
+      }
+    }
+
+    // ── Send email via EmailJS ──────────────────────────────────────────────
+    async function sendEmail() {
+      const sel = getSelected();
+      if (!sel) return;
+
+      const cfg = loadConfig();
+      if (!cfg.publicKey || !cfg.serviceId || !cfg.templateId) {
+        setBanner(els.sendStatus, "EmailJS not configured. Fill in the setup box above.", "error");
+        els.sendStatus.classList.remove("hidden");
+        return;
+      }
+
+      els.sendEmailBtn.disabled = true;
+      setBanner(els.sendStatus, "Sending...", "info");
+      els.sendStatus.classList.remove("hidden");
+
+      const recipients = sel.recipients || councilRecipients;
+      const toEmails   = recipients.map(r => r.email).join(", ");
+      const toNames    = recipients.map(r => r.name).join(", ");
+
+      const templateParams = {
+        to_email:           toEmails,
+        to_name:            toNames,
+        reply_to:           sel.email,
+        from_name:          sel.full_name,
+        supporter_locality: sel.locality,
+        supporter_email:    sel.email,
+        message:            sel.message,
+        subject:            "Support for 1500 Gateway",
+      };
+
+      try {
+        await emailjs.send(cfg.serviceId, cfg.templateId, templateParams);
+
+        sel.review_status = "sent";
+        await sbUpdate(sel.id, { review_status: "sent" });
+
+        setBanner(els.sendStatus, `Sent. Email delivered to ${toEmails}.`, "success");
+        renderAdmin();
+      } catch (err) {
+        setBanner(els.sendStatus, `Failed: ${err?.text || err?.message || JSON.stringify(err)}`, "error");
+        els.sendEmailBtn.disabled = false;
+      }
+    }
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    let _appStarted = false;
+    function init() {
+      if (_appStarted) { showApp(); loadMessages(); return; }
+      _appStarted = true;
+
+      initEmailJS();
+
+      [
+        [els.searchInput,     "input",  renderAdmin],
+        [els.filterStatus,    "change", renderAdmin],
+        [els.refreshBtn,      "click",  loadMessages],
+        [els.markApprovedBtn, "click",  () => saveStatus("approved")],
+        [els.markPendingBtn,  "click",  () => saveStatus("pending")],
+        [els.markRejectedBtn, "click",  () => saveStatus("rejected")],
+        [els.saveNotesBtn,    "click",  saveNotes],
+        [els.sendEmailBtn,    "click",  sendEmail],
+      ].forEach(([el, evt, fn]) => {
+        if (el) el.addEventListener(evt, fn);
+        else console.warn("Missing element for event:", evt);
+      });
+
+      showApp();
+      loadMessages();
+    }
+
+    // ── Auth wiring ─────────────────────────────────────────────────────────
+    function wireAuth() {
+      const form    = document.getElementById("loginForm");
+      const emailEl = document.getElementById("loginEmail");
+      const passEl  = document.getElementById("loginPassword");
+      const btn     = document.getElementById("loginBtn");
+      const err     = document.getElementById("loginError");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.textContent = "Signing in...";
+        err.style.display = "none";
+        try {
+          await login(emailEl.value.trim(), passEl.value);
+          passEl.value = "";
+          boot();
+        } catch (ex) {
+          err.textContent = ex.message || "Sign in failed.";
+          err.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign in";
+        }
+      });
+
+      logoutBtn.addEventListener("click", logout);
+    }
+
+    function boot() {
+      if (loadSession()) {
+        // Wait for EmailJS to load before showing the app UI
+        (function waitForEJS() {
+          if (window.emailjs) { init(); }
+          else { setTimeout(waitForEJS, 50); }
+        })();
+      } else {
+        showLogin();
+      }
+    }
+
+    wireAuth();
+    boot();
+  </script>
+</body>
+</html>
